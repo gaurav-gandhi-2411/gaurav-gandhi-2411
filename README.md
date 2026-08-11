@@ -14,8 +14,8 @@ Senior Data Scientist building production GenAI systems in Uber's AI org (via In
   <img alt="Research" src="assets/h-research-light.svg" width="100%">
 </picture>
 
-- **Tool-Description Quality Is Not One Axis** — a regime analysis of where tool-description precision helps agent tool-use and where it backfires, tested across two production MCP-server mirrors (GitHub, AWS IAM) and a pre-registered pilot of 10 public Python MCP servers. *Under submission.* — [code](https://github.com/gaurav-gandhi-2411/agentgauge)
-- **Powering Agent Evaluations** — variance structure, a 10-class measurement-artifact taxonomy, and a paired/CUPED estimator for agent tool-use benchmarks that reaches a minimum detectable effect of 0.054 at n=253 (vs. 0.433 uncorrected). *Under submission.* — [code](https://github.com/gaurav-gandhi-2411/agentgauge)
+- **Tool-Description Quality Is Not One Axis** — a regime analysis of where tool-description precision helps agent tool-use and where it backfires, tested across two production MCP-server mirrors (GitHub, AWS IAM) and a pre-registered pilot of 10 public Python MCP servers. *Under submission.* — [paper](https://github.com/gaurav-gandhi-2411/agentgauge/blob/main/docs/paper/latex/main.pdf) · [code](https://github.com/gaurav-gandhi-2411/agentgauge)
+- **Powering Agent Evaluations** — variance structure, a 10-class measurement-artifact taxonomy, and a paired/CUPED estimator for agent tool-use benchmarks that reaches a minimum detectable effect of 0.054 at n=253 (vs. 0.433 uncorrected). *Under submission.* — [paper](https://github.com/gaurav-gandhi-2411/agentgauge/blob/main/docs/paper2/main.pdf) · [code](https://github.com/gaurav-gandhi-2411/agentgauge)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-focus-dark.svg">
@@ -43,11 +43,11 @@ Senior Data Scientist building production GenAI systems in Uber's AI org (via In
 | **TriageIQ** | Four-stage GitHub issue triage — classifies component, retrieves similar solved issues, estimates resolution time, drafts a grounded summary | 87.1% / 89.8% top-3 component accuracy (k8s / vscode) | [Live](https://triage-iq-orcin.vercel.app/) · [Repo](https://github.com/gaurav-gandhi-2411/triage-iq) |
 | **AgentGauge** | Causal A/B harness measuring whether an MCP tool-description change actually moves agent task success | one blocking description defect cut task success 13.3–28.9pp across 3 model families | `pip install agentgauge-harness` · [Repo](https://github.com/gaurav-gandhi-2411/agentgauge) |
 | **Multimodal Fashion Recommender** | Two-tower recommender aligning CLIP image embeddings with SBERT text embeddings | 3.06× Recall@10 lift vs. a popularity baseline | [HF Space](https://huggingface.co/spaces/gauravgandhi2411/multimodal-fashion-recommender) · [Repo](https://github.com/gaurav-gandhi-2411/multimodal-fashion-recommender) |
-| **Style Maitri** | AI stylist for Indian weddings — searches 8 store catalogues at once with guardrails against invented prices/sizes | 93.8% intent-parsing accuracy (n=211) | [Live](https://stylemaitri.vercel.app) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-shopping-assistant) |
+| **Style Maitri** | AI stylist for Indian occasion wear — searches 52,494 items across 8 stores with guardrails against invented prices/sizes | 93.8% intent-parsing accuracy (n=211) | [Live](https://stylemaitri.vercel.app) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-shopping-assistant) |
 | **AetherArt** | SDXL fine-tuned into a Japanese ukiyo-e style, composed with Hyper-SD and ControlNet | 6.2GB peak VRAM — full pipeline fits an 8GB consumer GPU | [Live](https://aetherart-demo-473907703523.us-central1.run.app/) · [Repo](https://github.com/gaurav-gandhi-2411/AetherArt) |
 | **Warmer** | Daily semantic word game — an embedding model scores how close a guess is, including Hinglish | Hinglish eval: −0.003 → 0.813 Spearman correlation | [Live](https://playwarmer.vercel.app/) |
-| **DealHunter** | Multi-agent flight search — turns a plain-English trip request into two honestly-explained trade-offs | 31/31 (100%) correct archetype selection on the planner baseline | [Live](https://agentic-travel-booking-system.vercel.app) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
-| **Samidha Reviews** | Turns customer reviews into structured insight across English, Hindi, and Hinglish with tiered LLM routing | 83.8% extraction accuracy (en/hi/hi-en) | [Live](https://review-iq-ajjrytb3na-el.a.run.app/docs) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
+| **DealHunter** | Multi-agent flight search — turns a plain-English trip request into two honestly-explained trade-offs | 31/31 correct archetype selection on the planner baseline (Wilson 95% CI 89–100%) | [Live](https://agentic-travel-booking-system.vercel.app) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
+| **Samidha Reviews** | Turns customer reviews into structured insight across English, Hindi, and Hinglish with tiered LLM routing | 83.8% extraction accuracy (en/hi/hi-en) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-how-dark.svg">
@@ -58,7 +58,7 @@ Senior Data Scientist building production GenAI systems in Uber's AI org (via In
 Every project ships with a pre-registered evaluation harness, and negative results get published, not buried. Three concrete examples:
 
 - **AgentGauge falsified its own v1 thesis.** The original 8-axis LLM-judged quality score didn't predict real task success after correcting for multiple comparisons and prompt length — so the project was rebuilt around a causal A/B harness instead of patched to save the score. — [case study](https://gaurav-gandhi.vercel.app/work/agentgauge)
-- **Gold Rate Tracker ships the naive baseline.** Across a 200+ fold backtest, the naive forecast still beats the ML model — so the naive baseline is what's in production, not the model. — [case study](https://gaurav-gandhi.vercel.app/work/gold-rate-tracker)
+- **Gold Rate Tracker ships the naive baseline.** Across a 204-fold backtest, the naive forecast still beats the ML model (MAE 251.99 vs. 293.10) — so the naive baseline is what's in production, not the model. — [case study](https://gaurav-gandhi.vercel.app/work/gold-rate-tracker)
 - **AetherArt reversed a published conclusion.** CLIP score — the field's default image-quality metric — turned out to be structurally blind to real quality changes in most cases tested; re-running the analysis under a stricter statistical bar cut the project's own headline finding from 9/9 down to 4/9, and the smaller number is what it reports. — [case study](https://gaurav-gandhi.vercel.app/work/aetherart)
 
 <picture>
@@ -69,8 +69,8 @@ Every project ships with a pre-registered evaluation harness, and negative resul
 
 | Years | Era | Proof |
 |:------|:----|:------|
-| 2021–2022 | Data engineering — GCP ETL pipelines & dashboards (TCS) | [Résumé](https://gaurav-gandhi.vercel.app/resume.pdf) |
-| 2022–2024 | Decision science — Bayesian change-point detection, SARIMA forecasting (FedEx) | [Résumé](https://gaurav-gandhi.vercel.app/resume.pdf) |
+| 2021–2022 | Data engineering — GCP ETL pipelines & dashboards (TCS) | |
+| 2022–2024 | Decision science — Bayesian change-point detection, SARIMA forecasting (FedEx) | |
 | 2024–2025 | Applied GenAI in production — 144-GPU doc-understanding transformer, session-aware recommender (Uber AI, via Indium) | [Résumé](https://gaurav-gandhi.vercel.app/resume.pdf) |
 | 2025–now | Leading a 5-person GenAI team; shipping AI products & research under my own name | [Portfolio](https://gaurav-gandhi.vercel.app) · [AgentGauge](https://github.com/gaurav-gandhi-2411/agentgauge) |
 
