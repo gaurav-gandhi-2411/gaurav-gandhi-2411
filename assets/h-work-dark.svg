@@ -7,27 +7,19 @@
 
     .eyebrow{font-family:'SG',-apple-system,'Segoe UI',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.3em;fill:#818CF8;}
     .title{font-family:'FR',Georgia,serif;font-weight:600;font-size:38px;letter-spacing:-0.4px;fill:#EDEEF0;}
-    .shine{animation:shine 6s linear infinite;}
-    @media (prefers-reduced-motion: reduce) { .shine { animation: none; } }
-    @keyframes shine { from { transform: translateX(0); } to { transform: translateX(1480px); } }
     </style>
     <linearGradient id="rule-03" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#818CF8" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#818CF8" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="shine-03" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#EDEEF0" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#EDEEF0" stop-opacity="0.5"/>
-      <stop offset="1" stop-color="#EDEEF0" stop-opacity="0"/>
-    </linearGradient>
   </defs>
   <rect x="2" y="10" width="5" height="56" rx="2.5" fill="#818CF8"/>
   <text x="26" y="26" class="eyebrow">03 &#183; PROJECTS</text>
   <text x="24" y="68" class="title">Shipped &amp; live</text>
-  <rect x="0" y="84" width="1200" height="2" rx="1" fill="url(#rule-03)"/>
   <rect x="0" y="84" width="1200" height="2" fill="#62656E" opacity="0.15"/>
-  <g clip-path="url(#clip-03)">
-    <rect x="-220" y="84" width="200" height="2" fill="url(#shine-03)" class="shine"/>
-  </g>
-  <clipPath id="clip-03"><rect x="0" y="84" width="1200" height="2"/></clipPath>
+  <line x1="0" y1="85" x2="1200" y2="85" stroke="url(#rule-03)" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="1200" stroke-dashoffset="1200">
+    <animate attributeName="stroke-dashoffset" from="1200" to="0" dur="1.2s" begin="0s" fill="freeze"
+             calcMode="spline" keySplines="0.42 0 0.58 1"/>
+  </line>
 </svg>
