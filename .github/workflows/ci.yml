@@ -21,3 +21,5 @@ jobs:
         run: node scripts/check-svgs.mjs
       - name: No third-party image hosts in README.md
         run: node scripts/check-readme-image-hosts.mjs
+      - name: WCAG AA contrast, both themes
+        run: node scripts/check-contrast.mjs
