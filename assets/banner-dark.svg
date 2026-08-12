@@ -25,13 +25,13 @@
   <g>
     <path d="M 926.25 223 C 916.25 263, 886.25 255, 876.25 295" fill="none" stroke="#818CF8" stroke-width="1.5" stroke-linecap="round"
           stroke-dasharray="200" stroke-dashoffset="200" opacity="0.85">
-      <animate attributeName="stroke-dashoffset" dur="16s" begin="0s" repeatCount="indefinite"
-               calcMode="spline" keyTimes="0;0.35;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
+      <animate attributeName="stroke-dashoffset" dur="10s" begin="0s" repeatCount="indefinite"
+               calcMode="spline" keyTimes="0;0.3;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
                values="200;0;0;200"/>
     </path>
     <circle cx="876.25" cy="295" r="3.5" fill="#818CF8" opacity="0">
-      <animate attributeName="opacity" dur="16s" begin="0s" repeatCount="indefinite"
-               calcMode="spline" keyTimes="0;0.35;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
+      <animate attributeName="opacity" dur="10s" begin="0s" repeatCount="indefinite"
+               calcMode="spline" keyTimes="0;0.3;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
                values="0;1;1;0"/>
     </circle>
     <text x="926.25" y="215" class="mval" text-anchor="start">3.06×</text>
@@ -41,13 +41,13 @@
   <g>
     <path d="M 1065.75 141 C 1055.75 181, 1025.75 183, 1015.75 223" fill="none" stroke="#818CF8" stroke-width="1.5" stroke-linecap="round"
           stroke-dasharray="200" stroke-dashoffset="200" opacity="0.85">
-      <animate attributeName="stroke-dashoffset" dur="16s" begin="5.3s" repeatCount="indefinite"
-               calcMode="spline" keyTimes="0;0.35;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
+      <animate attributeName="stroke-dashoffset" dur="10s" begin="2.5s" repeatCount="indefinite"
+               calcMode="spline" keyTimes="0;0.3;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
                values="200;0;0;200"/>
     </path>
     <circle cx="1015.75" cy="223" r="3.5" fill="#818CF8" opacity="0">
-      <animate attributeName="opacity" dur="16s" begin="5.3s" repeatCount="indefinite"
-               calcMode="spline" keyTimes="0;0.35;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
+      <animate attributeName="opacity" dur="10s" begin="2.5s" repeatCount="indefinite"
+               calcMode="spline" keyTimes="0;0.3;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
                values="0;1;1;0"/>
     </circle>
     <text x="1065.75" y="133" class="mval" text-anchor="start">87.1%</text>
@@ -57,13 +57,13 @@
   <g>
     <path d="M 1195.25 79 C 1185.25 119, 1165.25 111, 1155.25 151" fill="none" stroke="#818CF8" stroke-width="1.5" stroke-linecap="round"
           stroke-dasharray="200" stroke-dashoffset="200" opacity="0.85">
-      <animate attributeName="stroke-dashoffset" dur="16s" begin="10.6s" repeatCount="indefinite"
-               calcMode="spline" keyTimes="0;0.35;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
+      <animate attributeName="stroke-dashoffset" dur="10s" begin="5s" repeatCount="indefinite"
+               calcMode="spline" keyTimes="0;0.3;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
                values="200;0;0;200"/>
     </path>
     <circle cx="1155.25" cy="151" r="3.5" fill="#818CF8" opacity="0">
-      <animate attributeName="opacity" dur="16s" begin="10.6s" repeatCount="indefinite"
-               calcMode="spline" keyTimes="0;0.35;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
+      <animate attributeName="opacity" dur="10s" begin="5s" repeatCount="indefinite"
+               calcMode="spline" keyTimes="0;0.3;0.85;1" keySplines="0.42 0 0.58 1;0 0 1 1;0.42 0 0.58 1"
                values="0;1;1;0"/>
     </circle>
     <text x="1195.25" y="71" class="mval" text-anchor="start">0.813</text>
