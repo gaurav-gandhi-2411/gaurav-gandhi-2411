@@ -180,6 +180,16 @@ const COPY = {
 // The one metric the banner shows, with enough frame that a stranger who has
 // never heard of the project understands it. Provenance SHA is real —
 // gg-portfolio content/metrics.json.
+//
+// The headline text node carries class="mval" and MUST keep it. It is not a
+// styling hook (nothing here selects on it) — it is the marker
+// gg-portfolio's scripts/check-metric-freshness.mjs scopes its SVG-drift
+// scan to. That scan deliberately refuses to read raw file text, because
+// these assets embed base64 font subsets whose bytes are full of digits that
+// would parse as metric tokens; `mval` is the only thing that makes a
+// text-presence check on a generated SVG safe at all. The first version of
+// this generator dropped the class, and the freshness check immediately and
+// correctly reported drift on every tracked pair.
 const CALLOUT = {
   model: "hinglish-relatedness-sbert",
   headline: "Spearman −0.003 → 0.813 after fine-tuning",
@@ -328,7 +338,7 @@ function banner(t) {
     <text x="${cardX + 17}" y="${
     cardY + 23
   }" font-family="${JB}" font-size="11.5" fill="${t.accent}">${esc(CALLOUT.model)}</text>
-    <text x="${cardX + 17}" y="${
+    <text class="mval" x="${cardX + 17}" y="${
     cardY + 45
   }" font-family="${SG}" font-size="14.5" font-weight="500" fill="${t.hi}">${esc(
     CALLOUT.headline
