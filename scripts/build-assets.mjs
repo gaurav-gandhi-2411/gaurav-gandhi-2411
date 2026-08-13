@@ -89,6 +89,16 @@ const AXES = {
   jetbrains: (wght) => [`wght=${wght}`],
 };
 
+// Pinned so the build is reproducible. fontTools stamps the OpenType `head`
+// table's `modified` field with the current time, so without this every run
+// produced different font bytes from identical inputs — all 14 assets showed
+// as changed on a no-op rebuild, which makes "do the committed assets match
+// the generator?" unanswerable and buries a real diff in noise. fontTools
+// honours SOURCE_DATE_EPOCH (the reproducible-builds convention) for exactly
+// this. The value is arbitrary; only its fixedness matters.
+const SOURCE_DATE_EPOCH = "1735689600"; // 2025-01-01T00:00:00Z
+const FONT_ENV = { ...process.env, SOURCE_DATE_EPOCH };
+
 const subsetCache = new Map();
 const instanceCache = new Map();
 const WORK = mkdtempSync(join(tmpdir(), "ghassets-"));
@@ -112,7 +122,7 @@ function instance(family, wght) {
       "-o",
       out,
     ],
-    { stdio: ["ignore", "ignore", "pipe"] }
+    { stdio: ["ignore", "ignore", "pipe"], env: FONT_ENV }
   );
   instanceCache.set(cacheKey, out);
   return out;
@@ -146,7 +156,7 @@ function subset(family, wght, chars) {
       "--desubroutinize",
       "--name-IDs=",
     ],
-    { stdio: ["ignore", "ignore", "pipe"] }
+    { stdio: ["ignore", "ignore", "pipe"], env: FONT_ENV }
   );
   const b64 = readFileSync(out).toString("base64");
   subsetCache.set(cacheKey, b64);
@@ -180,6 +190,16 @@ const COPY = {
 // The one metric the banner shows, with enough frame that a stranger who has
 // never heard of the project understands it. Provenance SHA is real —
 // gg-portfolio content/metrics.json.
+//
+// The headline text node carries class="mval" and MUST keep it. It is not a
+// styling hook (nothing here selects on it) — it is the marker
+// gg-portfolio's scripts/check-metric-freshness.mjs scopes its SVG-drift
+// scan to. That scan deliberately refuses to read raw file text, because
+// these assets embed base64 font subsets whose bytes are full of digits that
+// would parse as metric tokens; `mval` is the only thing that makes a
+// text-presence check on a generated SVG safe at all. The first version of
+// this generator dropped the class, and the freshness check immediately and
+// correctly reported drift on every tracked pair.
 const CALLOUT = {
   model: "hinglish-relatedness-sbert",
   headline: "Spearman −0.003 → 0.813 after fine-tuning",
@@ -328,7 +348,7 @@ function banner(t) {
     <text x="${cardX + 17}" y="${
     cardY + 23
   }" font-family="${JB}" font-size="11.5" fill="${t.accent}">${esc(CALLOUT.model)}</text>
-    <text x="${cardX + 17}" y="${
+    <text class="mval" x="${cardX + 17}" y="${
     cardY + 45
   }" font-family="${SG}" font-size="14.5" font-weight="500" fill="${t.hi}">${esc(
     CALLOUT.headline
