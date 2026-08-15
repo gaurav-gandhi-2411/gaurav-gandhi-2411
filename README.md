@@ -68,6 +68,12 @@ Every project ships with a pre-registered evaluation harness, and negative resul
 - **AetherArt reversed a published conclusion.** CLIP score — the field's default image-quality metric — turned out to be structurally blind to real quality changes in most cases tested; re-running the analysis under a stricter statistical bar cut the project's own headline finding from 9/9 down to 4/9, and the smaller number is what it reports. — [case study](https://gaurav-gandhi.vercel.app/work/aetherart)
 
 <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/monogram-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/monogram-light.svg">
+  <img alt="GG monogram" src="assets/monogram-light.svg" width="40">
+</picture>
+
+<picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-journey-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/h-journey-light.svg">
   <img alt="Journey" src="assets/h-journey-light.svg" width="100%">

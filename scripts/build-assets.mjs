@@ -513,6 +513,40 @@ function sparkline(t) {
 `;
 }
 
+// ------------------------------------------------------------- monogram
+
+// The "GG" mark, path data copied verbatim from gg-portfolio's own
+// public/logo-mark.svg (the canonical source — this repo had no monogram of
+// its own to extract from, despite what an earlier brief assumed; see PR
+// description). The portfolio site colours the two strokes with
+// var(--text-hi)/var(--accent), which switch per theme in its own CSS; an
+// <img>-loaded SVG here can't consume an external stylesheet's custom
+// properties, so the same two tokens are baked in per theme instead, exactly
+// like every other asset this generator produces.
+const MONOGRAM_PATHS = [
+  { d: "M 35.37 41.96 A 15.50 15.50 0 1 1 35.37 22.04", tone: "hi" },
+  { d: "M 39.00 32.00 L 30.48 32.00", tone: "hi" },
+  { d: "M 28.63 22.04 A 15.50 15.50 0 1 1 28.63 41.96", tone: "accent" },
+  { d: "M 25.00 32.00 L 33.52 32.00", tone: "accent" },
+];
+
+const MW = 64;
+const MH = 64;
+
+function monogram(t) {
+  const strokes = MONOGRAM_PATHS.map(
+    ({ d, tone }) =>
+      `<path d="${d}" fill="none" stroke="${t[tone]}" stroke-width="4.6" stroke-linecap="round"/>`
+  ).join("\n    ");
+  return `<svg width="${MW}" height="${MH}" viewBox="0 0 ${MW} ${MH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GG monogram">
+  <rect x="1" y="1" width="${MW - 2}" height="${
+    MH - 2
+  }" rx="16" fill="${t.bg}" stroke="${t.border}" stroke-width="1"/>
+  ${strokes}
+</svg>
+`;
+}
+
 // ----------------------------------------------------------------- run
 
 let written = 0;
@@ -530,6 +564,10 @@ for (const [tname, t] of Object.entries(THEMES)) {
   const spark = sparkline(t);
   writeFileSync(join(ASSETS, `sparkline-${tname}.svg`), spark);
   console.log(`sparkline-${tname}.svg`.padEnd(24) + `${Buffer.byteLength(spark).toLocaleString()} bytes`);
+  written++;
+  const mono = monogram(t);
+  writeFileSync(join(ASSETS, `monogram-${tname}.svg`), mono);
+  console.log(`monogram-${tname}.svg`.padEnd(24) + `${Buffer.byteLength(mono).toLocaleString()} bytes`);
   written++;
 }
 console.log(`\nwrote ${written} files`);
