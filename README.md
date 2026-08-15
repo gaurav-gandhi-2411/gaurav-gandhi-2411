@@ -50,6 +50,12 @@ Senior Data Scientist building production GenAI systems in Uber's AI org (via In
 | **Samidha Reviews** | Turns customer reviews into structured insight across English, Hindi, and Hinglish with tiered LLM routing | 83.8% extraction accuracy (en/hi/hi-en) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
 
 <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/sparkline-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/sparkline-light.svg">
+  <img alt="Accuracy sparkline: TriageIQ (k8s top-3) 87.1%, Style Maitri (intent-parsing) 93.8%, Samidha Reviews (extraction) 83.8% — all from the table above" src="assets/sparkline-light.svg" width="100%">
+</picture>
+
+<picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-how-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/h-how-light.svg">
   <img alt="How I work" src="assets/h-how-light.svg" width="100%">

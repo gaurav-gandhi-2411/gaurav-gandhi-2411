@@ -433,6 +433,86 @@ function header(t, h) {
 `;
 }
 
+// ------------------------------------------------------------ sparkline
+
+// Three already-verified accuracy metrics lifted straight from the project
+// table in README.md — this asset introduces no new numbers, it visualizes
+// ones already cited and already gated by the repo's own claims. Picked for
+// being on the same 0-100% accuracy scale so a single bar-length axis is
+// honest (Wilson-CI and MAE-style results from the same table are not
+// comparable on this axis and are intentionally left out).
+const SPARK = [
+  { label: "TriageIQ (k8s top-3)", value: 87.1 },
+  { label: "Style Maitri (intent-parsing)", value: 93.8 },
+  { label: "Samidha Reviews (extraction)", value: 83.8 },
+];
+
+const SW = 1200;
+const SH = 150;
+
+function sparkline(t) {
+  const trackX = 330;
+  const trackW = 730;
+  const rowYs = [46, 84, 122];
+
+  // Reuses the same subset() call the banner's callout already makes for
+  // JetBrains at weight 400 — the axis-pinned instance is cached by
+  // (family, weight) inside this run, so this only pays for a fresh glyph
+  // cut, not a second font-instancing pass.
+  const uses = [
+    {
+      family: "spacegrotesk",
+      css: "SG",
+      wght: 500,
+      text: SPARK.map((s) => s.label).join("") + "Matches the project table above.",
+    },
+    { family: "jetbrains", css: "JB", wght: 400, text: SPARK.map((s) => `${s.value}%`).join("") },
+  ];
+
+  const rows = SPARK.map((s, i) => {
+    const y = rowYs[i];
+    const barY = y - 14;
+    const barW = +(trackW * (s.value / 100)).toFixed(1);
+    return `
+    <text x="28" y="${y}" font-family="${SG}" font-size="13" font-weight="500" fill="${t.lo}">${esc(
+      s.label
+    )}</text>
+    <rect x="${trackX}" y="${barY}" width="${trackW}" height="10" rx="5" fill="${
+      t.chipBg
+    }" stroke="${t.chipBorder}" stroke-width="1"/>
+    <rect x="${trackX}" y="${barY}" width="${barW}" height="10" rx="5" fill="${t.accent}"/>
+    <text x="${trackX + trackW + 14}" y="${y}" font-family="${JB}" font-size="13" fill="${
+      t.hi
+    }">${s.value}%</text>`;
+  }).join("\n");
+
+  const ariaLabel = `Accuracy sparkline: ${SPARK.map((s) => `${s.label} ${s.value}%`).join(", ")}`;
+
+  // One pulse-dot, matching the banner's existing scatter idiom (opacity
+  // <animate>, repeatCount="indefinite") rather than inventing a new motion
+  // style — a small "this is live-verified" marker beside the caption.
+  return `<svg width="${SW}" height="${SH}" viewBox="0 0 ${SW} ${SH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(
+    ariaLabel
+  )}">
+  <defs>
+    <style>
+    ${fontFaces(uses)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="${SW - 2}" height="${
+    SH - 2
+  }" rx="14" fill="${t.bg}" stroke="${t.border}" stroke-width="1"/>
+  ${rows}
+  <circle cx="28" cy="${SH - 22}" r="3" fill="${t.accent}">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2.4s" repeatCount="indefinite"/>
+  </circle>
+  <text x="40" y="${
+    SH - 18
+  }" font-family="${SG}" font-size="11" fill="${t.lo}">Matches the project table above.</text>
+</svg>
+`;
+}
+
 // ----------------------------------------------------------------- run
 
 let written = 0;
@@ -447,5 +527,9 @@ for (const [tname, t] of Object.entries(THEMES)) {
     console.log(`h-${h.slug}-${tname}.svg`.padEnd(24) + `${Buffer.byteLength(s).toLocaleString()} bytes`);
     written++;
   }
+  const spark = sparkline(t);
+  writeFileSync(join(ASSETS, `sparkline-${tname}.svg`), spark);
+  console.log(`sparkline-${tname}.svg`.padEnd(24) + `${Buffer.byteLength(spark).toLocaleString()} bytes`);
+  written++;
 }
 console.log(`\nwrote ${written} files`);
