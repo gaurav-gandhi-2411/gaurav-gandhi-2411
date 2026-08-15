@@ -6,6 +6,10 @@
       <stop offset="1" stop-color="#4338CA" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <rect x="0" y="11" width="1200" height="2" rx="1" fill="url(#d)"/>
   <rect x="0" y="11" width="1200" height="1" fill="#B7B9BF" opacity="0.1"/>
+  <line x1="0" y1="12" x2="1200" y2="12" stroke="url(#d)" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="1200" stroke-dashoffset="1200">
+    <animate attributeName="stroke-dashoffset" from="1200" to="0" dur="1.4s" begin="0.1s"
+             fill="freeze" calcMode="spline" keySplines="0.42 0 0.58 1"/>
+  </line>
 </svg>
