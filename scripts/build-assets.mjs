@@ -180,9 +180,9 @@ const esc = (s) =>
 // --------------------------------------------------------------- content
 
 const COPY = {
-  overline: "SENIOR DATA SCIENTIST · APPLIED AI",
+  overline: "LEAD DATA SCIENTIST · APPLIED AI",
   name: "Gaurav Gandhi",
-  sub1: "Leading a 5-person GenAI team in Uber's AI org.",
+  sub1: "Leading a 5-person data-science team in Uber's AI org.",
   sub2: "13 AI products shipped · 2 preprints on agent evaluation.",
   tagline: "Every number here links to the commit that produced it · gaurav-gandhi.vercel.app",
 };
@@ -355,7 +355,7 @@ function banner(t) {
 
   return `<svg width="${BW}" height="${BH}" viewBox="0 0 ${BW} ${BH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(
     COPY.name
-  )} — Senior Data Scientist, Applied AI. ${esc(COPY.sub1)} ${esc(COPY.sub2)}">
+  )} — Lead Data Scientist, Applied AI. ${esc(COPY.sub1)} ${esc(COPY.sub2)}">
   <defs>
     <style>
     ${fontFaces(uses)}

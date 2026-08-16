@@ -1,10 +1,10 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-  <img alt="Gaurav Gandhi — Senior Data Scientist, Applied AI" src="assets/banner-light.svg" width="100%">
+  <img alt="Gaurav Gandhi, Lead Data Scientist, Applied AI" src="assets/banner-light.svg" width="100%">
 </picture>
 
-Senior Data Scientist building production GenAI systems in Uber's AI org (via Indium Software) — plus independent AI products and research shipped under my own name.
+Lead Data Scientist building production GenAI systems in Uber's AI org (via Indium Software), plus independent AI products and research shipped under my own name.
 
 **[Portfolio →](https://gaurav-gandhi.vercel.app)** — every metric on that site links to the commit it came from.
 
