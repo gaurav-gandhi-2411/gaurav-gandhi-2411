@@ -200,10 +200,17 @@ const COPY = {
 // text-presence check on a generated SVG safe at all. The first version of
 // this generator dropped the class, and the freshness check immediately and
 // correctly reported drift on every tracked pair.
+//
+// The headline used to open with "Spearman". A visitor who lands on a GitHub
+// profile has not agreed to learn a statistic's name, and a word they have to
+// look up is a word that stops them reading. The numbers stay, because they
+// are the proof and they are what `mval` exists to keep honest; the jargon
+// goes, and the line underneath now says what the picture actually is, which
+// is the thing that was missing.
 const CALLOUT = {
   model: "hinglish-relatedness-sbert",
-  headline: "Spearman −0.003 → 0.813 after fine-tuning",
-  sub: "t-SNE of all 419 eval terms · commit ",
+  headline: "−0.003 → 0.813 after fine-tuning",
+  sub: "419 Hinglish words, arranged by meaning · commit ",
   sha: "16f35d1",
 };
 
@@ -241,11 +248,27 @@ function banner(t) {
     byCluster.get(p.c).push(p);
   }
 
-  // Motion: at most 3 things move at any instant (brief's ceiling). Three
-  // of the largest dots drift on long, eased loops; two similarity edges
-  // fade in and out on a 16s cycle, offset so they never overlap.
+  // Motion.
+  //
+  // The previous version moved three dots, by about six pixels, over
+  // thirteen seconds. That is motion by the numbers and a still image to the
+  // eye, which is exactly what GG reported: the banner does not visibly
+  // move. The ceiling of "at most 3 things move" was a self-imposed rule
+  // that produced a photograph.
+  //
+  // Two changes. Every cluster now drifts as a group, which is seven
+  // animateTransform elements for a field that visibly breathes, and it is
+  // the cheapest possible way to buy motion across all 419 dots. On top of
+  // that, thirty of the larger dots drift individually on their own phases,
+  // which is what gives relative motion between neighbours; a field where
+  // everything moves together reads as a pan, not as a living thing. That
+  // was the same lesson the portfolio hero taught.
+  //
+  // Still SMIL only. GitHub renders this through an <img>, so CSS animation
+  // and script never run; SMIL is the one thing that does.
+  const DRIFTER_COUNT = 30;
   const drifters = new Set(
-    [...pts].sort((a, b) => b.r - a.r).slice(0, 3).map((p) => `${p.x},${p.y}`)
+    [...pts].sort((a, b) => b.r - a.r).slice(0, DRIFTER_COUNT).map((p) => `${p.x},${p.y}`)
   );
   let di = 0;
 
@@ -256,10 +279,13 @@ function banner(t) {
         .map((p) => {
           const base = `<circle cx="${p.x}" cy="${p.y}" r="${p.r}"`;
           if (!drifters.has(`${p.x},${p.y}`)) return `${base}/>`;
-          const dx = 6 + di * 2;
-          const dy = 5 + di * 1.5;
-          const dur = 13 + di * 1.5;
-          const beg = -(di * 4.3);
+          // Bigger travel and a shorter loop than the version nobody could
+          // see move, with the phase spread across the whole cycle so the
+          // field never resets to a pose it held before.
+          const dx = 9 + (di % 5) * 2.5;
+          const dy = 7 + (di % 4) * 2;
+          const dur = 7 + (di % 6) * 1.3;
+          const beg = -((di * 1.7) % 9);
           di++;
           return (
             `${base}><animateMotion dur="${dur}s" begin="${beg}s" repeatCount="indefinite" ` +
@@ -268,7 +294,21 @@ function banner(t) {
           );
         })
         .join("");
-      return `<g fill="${t.accent}" opacity="${t.ramp[c % 7]}">${circles}</g>`;
+      // The whole cluster leans, slowly, each one on its own phase and in its
+      // own direction. Seven elements, and it is what makes the field read as
+      // alive rather than as a picture of dots.
+      const gdx = (2.6 + (c % 3) * 1.1).toFixed(1);
+      const gdy = (1.8 + (c % 4) * 0.9).toFixed(1);
+      const gdur = 11 + (c % 5) * 2;
+      const gbeg = -(c * 2.6).toFixed(1);
+      return (
+        `<g fill="${t.accent}" opacity="${t.ramp[c % 7]}">${circles}` +
+        `<animateTransform attributeName="transform" type="translate" ` +
+        `values="0 0; ${gdx} ${-gdy}; 0 0; ${-gdx} ${gdy}; 0 0" ` +
+        `dur="${gdur}s" begin="${gbeg}s" repeatCount="indefinite" ` +
+        `calcMode="spline" keyTimes="0;0.25;0.5;0.75;1" ` +
+        `keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/></g>`
+      );
     })
     .join("\n    ");
 

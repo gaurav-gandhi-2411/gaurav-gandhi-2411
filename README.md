@@ -45,7 +45,7 @@ Senior Data Scientist building production GenAI systems in Uber's AI org (via In
 | **Multimodal Fashion Recommender** | Two-tower recommender aligning CLIP image embeddings with SBERT text embeddings | 3.06× Recall@10 lift vs. a popularity baseline | [HF Space](https://huggingface.co/spaces/gauravgandhi2411/multimodal-fashion-recommender) · [Repo](https://github.com/gaurav-gandhi-2411/multimodal-fashion-recommender) |
 | **Style Maitri** | AI stylist for Indian occasion wear — searches 52,494 items across 8 stores with guardrails against invented prices/sizes | 93.8% intent-parsing accuracy (n=211) | [Live](https://gaurav-gandhi.vercel.app/warmup/style-maitri) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-shopping-assistant) |
 | **AetherArt** | SDXL fine-tuned into a Japanese ukiyo-e style, composed with Hyper-SD and ControlNet | 6.2GB peak VRAM — full pipeline fits an 8GB consumer GPU | [Live](https://gaurav-gandhi.vercel.app/warmup/aetherart) · [Repo](https://github.com/gaurav-gandhi-2411/AetherArt) |
-| **Warmer** | Daily semantic word game — an embedding model scores how close a guess is, including Hinglish | Hinglish eval: −0.003 → 0.813 Spearman correlation | [Live](https://playwarmer.vercel.app/) |
+| **Warmer** | A word game you play once a day, where your only clue is how close each guess comes in meaning to the secret word | Hinglish relatedness eval: −0.003 → 0.813 | [Live](https://playwarmer.vercel.app/) |
 | **DealHunter** | Multi-agent flight search — turns a plain-English trip request into two honestly-explained trade-offs | 31/31 correct archetype selection on the planner baseline (Wilson 95% CI 89–100%) | [Live](https://gaurav-gandhi.vercel.app/warmup/dealhunter) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
 | **Samidha Reviews** | Turns customer reviews into structured insight across English, Hindi, and Hinglish with tiered LLM routing | 83.8% extraction accuracy (en/hi/hi-en) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
 
@@ -89,6 +89,14 @@ Evaluation            LLM-as-judge · Conformal prediction · Bootstrap / CUPED 
 Serving               FastAPI · Cloud Run · Docker · Vercel · GCP
 Data & ops            Dagster · GitHub Actions · Prometheus · structlog
 ```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/stats-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/stats-light.svg">
+  <img alt="Public repositories, stars, last push, and the languages most of the code is written in" src="assets/stats-light.svg" width="100%">
+</picture>
+
+Generated from the GitHub API by [a scheduled Action](.github/workflows/stats.yml) and committed as SVG, so this page never loads an image from anyone else's server and the numbers only move in a commit you can read.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg">
