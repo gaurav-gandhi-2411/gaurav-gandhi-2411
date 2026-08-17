@@ -68,7 +68,7 @@ Every project ships with a pre-registered evaluation harness, and negative resul
   <img alt="GG monogram" src="assets/monogram-light.svg" width="40">
 </picture>
 
-I also break my own checks on purpose, to see whether they notice. Twenty-five times so far they did not, and each one is written up.
+I keep a written record of measurements that turned out to be lying, and of whatever caught each one. Twenty-five write-ups so far. Some are checks I broke on purpose to see whether they would notice.
 
 - A header test asserted the nav band shrank on scroll. It did, and the shrinking was the bug: the band sat in flow, so every element below it moved too. The test had been written after reading the code, so it could only ever agree with it.
 - Deleting one test case took a retrieval score from 95.0% to 100%, the one case the retriever got wrong. The quality gate printed "all thresholds pass". A number that improves when you remove the question is worse than no number.
