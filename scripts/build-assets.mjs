@@ -416,13 +416,22 @@ function banner(t) {
 
 // ------------------------------------------------------------- headers
 
+// The eyebrow carries no ordinal. These sections have no sequence: nobody
+// reads a profile in order and nothing here is step 3 of anything, so a
+// number in front of each one was decoration wearing the costume of
+// structure. The word alone does the same navigational job.
+//
+// "corrections" is the section that had no header at all. It ran on from
+// "How I work" under a bare monogram, so the one part of the page making the
+// least comfortable claim was also the only part with nothing announcing it.
 const HEADERS = [
-  { slug: "research", n: "01", eyebrow: "RESEARCH", title: "Research" },
-  { slug: "focus", n: "02", eyebrow: "FOCUS", title: "What I work with" },
-  { slug: "work", n: "03", eyebrow: "SHIPPED", title: "Shipped & live" },
-  { slug: "how", n: "04", eyebrow: "METHOD", title: "How I work" },
-  { slug: "journey", n: "05", eyebrow: "JOURNEY", title: "Journey" },
-  { slug: "stack", n: "06", eyebrow: "STACK", title: "Stack" },
+  { slug: "research", eyebrow: "RESEARCH", title: "Research" },
+  { slug: "focus", eyebrow: "FOCUS", title: "What I work with" },
+  { slug: "work", eyebrow: "SHIPPED", title: "Shipped & live" },
+  { slug: "how", eyebrow: "METHOD", title: "How I work" },
+  { slug: "corrections", eyebrow: "RECORD", title: "Corrections" },
+  { slug: "journey", eyebrow: "JOURNEY", title: "Journey" },
+  { slug: "stack", eyebrow: "STACK", title: "Stack" },
 ];
 
 const HW = 1200;
@@ -432,7 +441,7 @@ const HW = 1200;
 const HH = 106;
 
 function header(t, h) {
-  const eyebrow = `${h.n} · ${h.eyebrow}`;
+  const eyebrow = h.eyebrow;
   const uses = [
     { family: "spacegrotesk", css: "SG", wght: 700, text: eyebrow },
     { family: "fraunces", css: "FR", wght: 600, text: h.title },
