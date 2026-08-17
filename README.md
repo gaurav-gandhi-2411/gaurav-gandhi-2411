@@ -47,6 +47,7 @@ Lead Data Scientist building production GenAI systems in Uber's AI org (via Indi
 | **AetherArt** | SDXL fine-tuned into a Japanese ukiyo-e style, composed with Hyper-SD and ControlNet | 6.2GB peak VRAM — full pipeline fits an 8GB consumer GPU | [Live](https://gaurav-gandhi.vercel.app/warmup/aetherart) · [Repo](https://github.com/gaurav-gandhi-2411/AetherArt) |
 | **Warmer** | A word game you play once a day, where your only clue is how close each guess comes in meaning to the secret word | Hinglish relatedness eval: −0.003 → 0.813 | [Live](https://playwarmer.vercel.app/) |
 | **DealHunter** | Multi-agent flight search — turns a plain-English trip request into two honestly-explained trade-offs | 31/31 correct archetype selection on the planner baseline (Wilson 95% CI 89–100%) | [Live](https://gaurav-gandhi.vercel.app/warmup/dealhunter) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
+| **adk-tracegauge** | Cost-per-invocation evaluation for agents built on Google's Agent Development Kit, packaged so other people can install it against their own runs | 8 releases on PyPI, current v0.4.1 | `pip install adk-tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/adk-tracegauge) |
 | **Samidha Reviews** | Turns customer reviews into structured insight across English, Hindi, and Hinglish with tiered LLM routing | 83.8% extraction accuracy (en/hi/hi-en) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
 
 <picture>
@@ -66,6 +67,13 @@ Every project ships with a pre-registered evaluation harness, and negative resul
   <source media="(prefers-color-scheme: light)" srcset="assets/monogram-light.svg">
   <img alt="GG monogram" src="assets/monogram-light.svg" width="40">
 </picture>
+
+I also break my own checks on purpose, to see whether they notice. Twenty-five times so far they did not, and each one is written up.
+
+- A header test asserted the nav band shrank on scroll. It did, and the shrinking was the bug: the band sat in flow, so every element below it moved too. The test had been written after reading the code, so it could only ever agree with it.
+- Deleting one test case took a retrieval score from 95.0% to 100%, the one case the retriever got wrong. The quality gate printed "all thresholds pass". A number that improves when you remove the question is worse than no number.
+
+Both are fixed, and both fixes were checked against a build with the fix reverted.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-journey-dark.svg">
