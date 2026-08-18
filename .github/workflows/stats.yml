@@ -1,0 +1,62 @@
+name: Stats
+
+# Regenerates assets/stats-{dark,light}.svg from the GitHub API and commits
+# the result, so the README embeds a file in this repository rather than an
+# <img> pointing at somebody else's server. A stranger reading the profile
+# never makes a request to a third party, the numbers only ever change in a
+# commit somebody can read, and nothing here breaks when an external service
+# does.
+#
+# Weekly, not daily. These figures move slowly, and a job that rewrites two
+# files every morning turns the commit history into noise that hides the
+# actual work.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: stats
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate the stats SVGs
+        run: node scripts/build-stats.mjs
+        env:
+          # The default token is enough for public read and lifts the
+          # unauthenticated rate limit, which a scheduled job shares with
+          # every other runner on the same egress address.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The same gates the assets already pass in CI. A scheduled job that
+      # commits without them is a way to ship a malformed or oversized SVG
+      # at 6am on a Monday with nobody watching.
+      - name: SVG well-formedness and size budget
+        run: node scripts/check-svgs.mjs
+
+      - name: No third-party image hosts in README.md
+        run: node scripts/check-readme-image-hosts.mjs
+
+      - name: Commit if anything actually changed
+        run: |
+          if git diff --quiet -- assets/stats-dark.svg assets/stats-light.svg; then
+            echo "stats unchanged, nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/stats-dark.svg assets/stats-light.svg
+          git commit -m "chore(stats): refresh profile stats from the GitHub API [skip ci]"
+          git push

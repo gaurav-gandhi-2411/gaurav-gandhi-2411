@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="168" viewBox="0 0 1000 168" role="img" aria-label="17 public repositories. 1 star from other people. last push today. mostly Python, HTML, TypeScript, JavaScript, Jupyter Notebook">
+  <rect width="1000" height="168" rx="14" fill="#0A0B0D" stroke="#26282E"/>
+  <text x="34" y="40" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11" letter-spacing="3">FROM THE GITHUB API</text>
+  <line x1="34" y1="52" x2="966" y2="52" stroke="#26282E"/>
+  
+    <text x="34" y="86" fill="#EDEEF0" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="600">17</text>
+    <text x="34" y="112" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="12" letter-spacing="0.5">public repositories</text>
+    <text x="302" y="86" fill="#EDEEF0" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="600">1</text>
+    <text x="302" y="112" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="12" letter-spacing="0.5">star from someone else</text>
+    <text x="570" y="86" fill="#EDEEF0" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="600">today</text>
+    <text x="570" y="112" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="12" letter-spacing="0.5">since the last push</text>
+  
+    <rect x="34" y="128" width="104" height="24" rx="12" fill="#131417" stroke="#26282E"/>
+    <text x="86" y="144" fill="#A2A6B0" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">Python</text>
+    <rect x="150" y="128" width="104" height="24" rx="12" fill="#131417" stroke="#26282E"/>
+    <text x="202" y="144" fill="#A2A6B0" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">HTML</text>
+    <rect x="266" y="128" width="104" height="24" rx="12" fill="#131417" stroke="#26282E"/>
+    <text x="318" y="144" fill="#A2A6B0" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">TypeScript</text>
+    <rect x="382" y="128" width="104" height="24" rx="12" fill="#131417" stroke="#26282E"/>
+    <text x="434" y="144" fill="#A2A6B0" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">JavaScript</text>
+    <rect x="498" y="128" width="104" height="24" rx="12" fill="#131417" stroke="#26282E"/>
+    <text x="550" y="144" fill="#A2A6B0" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">Jupyter Notebook</text>
+</svg>

@@ -180,9 +180,9 @@ const esc = (s) =>
 // --------------------------------------------------------------- content
 
 const COPY = {
-  overline: "SENIOR DATA SCIENTIST · APPLIED AI",
+  overline: "LEAD DATA SCIENTIST · APPLIED AI",
   name: "Gaurav Gandhi",
-  sub1: "Leading a 5-person GenAI team in Uber's AI org.",
+  sub1: "Leading a 5-person data-science team in Uber's AI org.",
   sub2: "13 AI products shipped · 2 preprints on agent evaluation.",
   tagline: "Every number here links to the commit that produced it · gaurav-gandhi.vercel.app",
 };
@@ -200,10 +200,17 @@ const COPY = {
 // text-presence check on a generated SVG safe at all. The first version of
 // this generator dropped the class, and the freshness check immediately and
 // correctly reported drift on every tracked pair.
+//
+// The headline used to open with "Spearman". A visitor who lands on a GitHub
+// profile has not agreed to learn a statistic's name, and a word they have to
+// look up is a word that stops them reading. The numbers stay, because they
+// are the proof and they are what `mval` exists to keep honest; the jargon
+// goes, and the line underneath now says what the picture actually is, which
+// is the thing that was missing.
 const CALLOUT = {
   model: "hinglish-relatedness-sbert",
-  headline: "Spearman −0.003 → 0.813 after fine-tuning",
-  sub: "t-SNE of all 419 eval terms · commit ",
+  headline: "−0.003 → 0.813 after fine-tuning",
+  sub: "419 Hinglish words, arranged by meaning · commit ",
   sha: "16f35d1",
 };
 
@@ -241,11 +248,27 @@ function banner(t) {
     byCluster.get(p.c).push(p);
   }
 
-  // Motion: at most 3 things move at any instant (brief's ceiling). Three
-  // of the largest dots drift on long, eased loops; two similarity edges
-  // fade in and out on a 16s cycle, offset so they never overlap.
+  // Motion.
+  //
+  // The previous version moved three dots, by about six pixels, over
+  // thirteen seconds. That is motion by the numbers and a still image to the
+  // eye, which is exactly what GG reported: the banner does not visibly
+  // move. The ceiling of "at most 3 things move" was a self-imposed rule
+  // that produced a photograph.
+  //
+  // Two changes. Every cluster now drifts as a group, which is seven
+  // animateTransform elements for a field that visibly breathes, and it is
+  // the cheapest possible way to buy motion across all 419 dots. On top of
+  // that, thirty of the larger dots drift individually on their own phases,
+  // which is what gives relative motion between neighbours; a field where
+  // everything moves together reads as a pan, not as a living thing. That
+  // was the same lesson the portfolio hero taught.
+  //
+  // Still SMIL only. GitHub renders this through an <img>, so CSS animation
+  // and script never run; SMIL is the one thing that does.
+  const DRIFTER_COUNT = 30;
   const drifters = new Set(
-    [...pts].sort((a, b) => b.r - a.r).slice(0, 3).map((p) => `${p.x},${p.y}`)
+    [...pts].sort((a, b) => b.r - a.r).slice(0, DRIFTER_COUNT).map((p) => `${p.x},${p.y}`)
   );
   let di = 0;
 
@@ -256,10 +279,13 @@ function banner(t) {
         .map((p) => {
           const base = `<circle cx="${p.x}" cy="${p.y}" r="${p.r}"`;
           if (!drifters.has(`${p.x},${p.y}`)) return `${base}/>`;
-          const dx = 6 + di * 2;
-          const dy = 5 + di * 1.5;
-          const dur = 13 + di * 1.5;
-          const beg = -(di * 4.3);
+          // Bigger travel and a shorter loop than the version nobody could
+          // see move, with the phase spread across the whole cycle so the
+          // field never resets to a pose it held before.
+          const dx = 9 + (di % 5) * 2.5;
+          const dy = 7 + (di % 4) * 2;
+          const dur = 7 + (di % 6) * 1.3;
+          const beg = -((di * 1.7) % 9);
           di++;
           return (
             `${base}><animateMotion dur="${dur}s" begin="${beg}s" repeatCount="indefinite" ` +
@@ -268,7 +294,21 @@ function banner(t) {
           );
         })
         .join("");
-      return `<g fill="${t.accent}" opacity="${t.ramp[c % 7]}">${circles}</g>`;
+      // The whole cluster leans, slowly, each one on its own phase and in its
+      // own direction. Seven elements, and it is what makes the field read as
+      // alive rather than as a picture of dots.
+      const gdx = (2.6 + (c % 3) * 1.1).toFixed(1);
+      const gdy = (1.8 + (c % 4) * 0.9).toFixed(1);
+      const gdur = 11 + (c % 5) * 2;
+      const gbeg = -(c * 2.6).toFixed(1);
+      return (
+        `<g fill="${t.accent}" opacity="${t.ramp[c % 7]}">${circles}` +
+        `<animateTransform attributeName="transform" type="translate" ` +
+        `values="0 0; ${gdx} ${-gdy}; 0 0; ${-gdx} ${gdy}; 0 0" ` +
+        `dur="${gdur}s" begin="${gbeg}s" repeatCount="indefinite" ` +
+        `calcMode="spline" keyTimes="0;0.25;0.5;0.75;1" ` +
+        `keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/></g>`
+      );
     })
     .join("\n    ");
 
@@ -315,7 +355,7 @@ function banner(t) {
 
   return `<svg width="${BW}" height="${BH}" viewBox="0 0 ${BW} ${BH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(
     COPY.name
-  )} — Senior Data Scientist, Applied AI. ${esc(COPY.sub1)} ${esc(COPY.sub2)}">
+  )} — Lead Data Scientist, Applied AI. ${esc(COPY.sub1)} ${esc(COPY.sub2)}">
   <defs>
     <style>
     ${fontFaces(uses)}
@@ -376,13 +416,22 @@ function banner(t) {
 
 // ------------------------------------------------------------- headers
 
+// The eyebrow carries no ordinal. These sections have no sequence: nobody
+// reads a profile in order and nothing here is step 3 of anything, so a
+// number in front of each one was decoration wearing the costume of
+// structure. The word alone does the same navigational job.
+//
+// "corrections" is the section that had no header at all. It ran on from
+// "How I work" under a bare monogram, so the one part of the page making the
+// least comfortable claim was also the only part with nothing announcing it.
 const HEADERS = [
-  { slug: "research", n: "01", eyebrow: "RESEARCH", title: "Research" },
-  { slug: "focus", n: "02", eyebrow: "FOCUS", title: "What I work with" },
-  { slug: "work", n: "03", eyebrow: "SHIPPED", title: "Shipped & live" },
-  { slug: "how", n: "04", eyebrow: "METHOD", title: "How I work" },
-  { slug: "journey", n: "05", eyebrow: "JOURNEY", title: "Journey" },
-  { slug: "stack", n: "06", eyebrow: "STACK", title: "Stack" },
+  { slug: "research", eyebrow: "RESEARCH", title: "Research" },
+  { slug: "focus", eyebrow: "FOCUS", title: "What I work with" },
+  { slug: "work", eyebrow: "SHIPPED", title: "Shipped & live" },
+  { slug: "how", eyebrow: "METHOD", title: "How I work" },
+  { slug: "corrections", eyebrow: "RECORD", title: "Corrections" },
+  { slug: "journey", eyebrow: "JOURNEY", title: "Journey" },
+  { slug: "stack", eyebrow: "STACK", title: "Stack" },
 ];
 
 const HW = 1200;
@@ -392,7 +441,7 @@ const HW = 1200;
 const HH = 106;
 
 function header(t, h) {
-  const eyebrow = `${h.n} · ${h.eyebrow}`;
+  const eyebrow = h.eyebrow;
   const uses = [
     { family: "spacegrotesk", css: "SG", wght: 700, text: eyebrow },
     { family: "fraunces", css: "FR", wght: 600, text: h.title },
@@ -433,6 +482,40 @@ function header(t, h) {
 `;
 }
 
+// ------------------------------------------------------------- monogram
+
+// The "GG" mark, path data copied verbatim from gg-portfolio's own
+// public/logo-mark.svg (the canonical source — this repo had no monogram of
+// its own to extract from, despite what an earlier brief assumed; see PR
+// description). The portfolio site colours the two strokes with
+// var(--text-hi)/var(--accent), which switch per theme in its own CSS; an
+// <img>-loaded SVG here can't consume an external stylesheet's custom
+// properties, so the same two tokens are baked in per theme instead, exactly
+// like every other asset this generator produces.
+const MONOGRAM_PATHS = [
+  { d: "M 35.37 41.96 A 15.50 15.50 0 1 1 35.37 22.04", tone: "hi" },
+  { d: "M 39.00 32.00 L 30.48 32.00", tone: "hi" },
+  { d: "M 28.63 22.04 A 15.50 15.50 0 1 1 28.63 41.96", tone: "accent" },
+  { d: "M 25.00 32.00 L 33.52 32.00", tone: "accent" },
+];
+
+const MW = 64;
+const MH = 64;
+
+function monogram(t) {
+  const strokes = MONOGRAM_PATHS.map(
+    ({ d, tone }) =>
+      `<path d="${d}" fill="none" stroke="${t[tone]}" stroke-width="4.6" stroke-linecap="round"/>`
+  ).join("\n    ");
+  return `<svg width="${MW}" height="${MH}" viewBox="0 0 ${MW} ${MH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GG monogram">
+  <rect x="1" y="1" width="${MW - 2}" height="${
+    MH - 2
+  }" rx="16" fill="${t.bg}" stroke="${t.border}" stroke-width="1"/>
+  ${strokes}
+</svg>
+`;
+}
+
 // ----------------------------------------------------------------- run
 
 let written = 0;
@@ -447,5 +530,9 @@ for (const [tname, t] of Object.entries(THEMES)) {
     console.log(`h-${h.slug}-${tname}.svg`.padEnd(24) + `${Buffer.byteLength(s).toLocaleString()} bytes`);
     written++;
   }
+  const mono = monogram(t);
+  writeFileSync(join(ASSETS, `monogram-${tname}.svg`), mono);
+  console.log(`monogram-${tname}.svg`.padEnd(24) + `${Buffer.byteLength(mono).toLocaleString()} bytes`);
+  written++;
 }
 console.log(`\nwrote ${written} files`);
