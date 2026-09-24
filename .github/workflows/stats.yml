@@ -24,6 +24,15 @@ on:
           stale cards. Leave blank for a normal run.
         required: false
         default: ""
+      open_source_url_override:
+        description: >-
+          Testing only: overrides the open-source.ts source URL
+          build-readme-cards.mjs fetches. Point this at a URL serving a file
+          with a broken shape (missing sourceRef, wrong export name, etc.)
+          to prove that path fails the run instead of committing a wrong
+          card. Leave blank for a normal run.
+        required: false
+        default: ""
 
 concurrency:
   group: stats
@@ -59,6 +68,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EXPERIENCE_SOURCE_URL_OVERRIDE: ${{ github.event.inputs.data_url_override }}
+          OPEN_SOURCE_URL_OVERRIDE: ${{ github.event.inputs.open_source_url_override }}
 
       # The same gates the assets already pass in CI. A scheduled job that
       # commits without them is a way to ship a malformed or oversized SVG
