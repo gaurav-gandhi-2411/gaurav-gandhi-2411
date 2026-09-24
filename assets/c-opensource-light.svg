@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="140" viewBox="0 0 1000 140" role="img" aria-label="3 pull requests landed upstream: google/adk-python #6681, google/adk-python #6939, keras-team/keras #23420.">
+  <rect width="1000" height="140" rx="14" fill="#EDEEF0" stroke="#D0D3D9"/>
+  <text x="34" y="40" fill="#4A4E56" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11" letter-spacing="3">OPEN SOURCE · VERIFIED VIA THE GITHUB API</text>
+  <line x1="34" y1="52" x2="966" y2="52" stroke="#D0D3D9"/>
+  <text x="34" y="80" fill="#0A0B0D" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="600">3 pull requests landed upstream</text>
+  
+    <rect x="34" y="88" width="184" height="24" rx="12" fill="#E3E5EA" stroke="#D0D3D9"/>
+    <text x="126" y="104" fill="#4A4E56" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">adk-python #6681</text>
+    <rect x="234" y="88" width="184" height="24" rx="12" fill="#E3E5EA" stroke="#D0D3D9"/>
+    <text x="326" y="104" fill="#4A4E56" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">adk-python #6939</text>
+    <rect x="434" y="88" width="184" height="24" rx="12" fill="#E3E5EA" stroke="#D0D3D9"/>
+    <text x="526" y="104" fill="#4A4E56" text-anchor="middle" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11">keras #23420</text>
+</svg>
