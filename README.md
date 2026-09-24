@@ -50,7 +50,7 @@ Lead Data Scientist building production GenAI systems in Uber's AI org (via Indi
 | **AetherArt** | SDXL fine-tuned into a Japanese ukiyo-e style, composed with Hyper-SD and ControlNet | 6.2GB peak VRAM, so the whole pipeline fits an 8GB consumer GPU | [Live](https://gaurav-gandhi.vercel.app/warmup/aetherart) · [Repo](https://github.com/gaurav-gandhi-2411/AetherArt) |
 | **Warmer** | A word game you play once a day, where your only clue is how close each guess comes in meaning to the secret word | Hinglish relatedness eval: −0.003 → 0.813 | [Live](https://playwarmer.vercel.app/) |
 | **DealHunter** | Multi-agent flight search that turns a plain-English trip request into two honestly explained trade-offs | 31/31 correct archetype selection on the planner baseline (Wilson 95% CI 89–100%) | [Live](https://gaurav-gandhi.vercel.app/warmup/dealhunter) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
-| **Samidha Reviews** | Turns customer reviews into structured insight across English, Hindi, and Hinglish with tiered LLM routing | 83.8% extraction accuracy (en/hi/hi-en) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
+| **Samidha Reviews** | Turns customer reviews into structured insight across English and Hinglish with tiered LLM routing | [78.6% on a 43-review CI eval set](https://github.com/gaurav-gandhi-2411/review-iq/blob/main/eval/report.md) (en/hi-en, 2026-09-19) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-how-dark.svg">
