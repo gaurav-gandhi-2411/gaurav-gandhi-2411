@@ -421,15 +421,18 @@ function banner(t) {
 // number in front of each one was decoration wearing the costume of
 // structure. The word alone does the same navigational job.
 //
-// "corrections" is the section that had no header at all. It ran on from
-// "How I work" under a bare monogram, so the one part of the page making the
-// least comfortable claim was also the only part with nothing announcing it.
+// docs/readme-restructure-refresh-2026-09: "focus" ("What I work with") was
+// folded into "stack" (same tools, two tables, zero net information) and
+// "corrections" lost its own header — the section now lives mostly at
+// docs/corrections.md, with one example and a link where it used to sit in
+// the README, so a standalone announcing header no longer earns its 106px.
+// "opensource" is new: three landed upstream PRs plus this repo's own PyPI
+// packages had no section of their own before.
 const HEADERS = [
-  { slug: "research", eyebrow: "RESEARCH", title: "Research" },
-  { slug: "focus", eyebrow: "FOCUS", title: "What I work with" },
   { slug: "work", eyebrow: "SHIPPED", title: "Shipped & live" },
+  { slug: "opensource", eyebrow: "OPEN SOURCE", title: "Open source" },
   { slug: "how", eyebrow: "METHOD", title: "How I work" },
-  { slug: "corrections", eyebrow: "RECORD", title: "Corrections" },
+  { slug: "research", eyebrow: "RESEARCH", title: "Research" },
   { slug: "journey", eyebrow: "JOURNEY", title: "Journey" },
   { slug: "stack", eyebrow: "STACK", title: "Stack" },
 ];
