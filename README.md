@@ -41,17 +41,7 @@ Lead Data Scientist building production GenAI systems in Uber's AI org (via Indi
   <img alt="Open source" src="assets/h-opensource-light.svg" width="100%">
 </picture>
 
-<a href="#open-source-detail">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/c-opensource-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/c-opensource-light.svg">
-    <img alt="3 pull requests landed upstream: google/adk-python #6681, google/adk-python #6939, keras-team/keras #23420." src="assets/c-opensource-light.svg" width="100%">
-  </picture>
-</a>
-
-Each proven by a commit on the target repo's own default branch, not just a merged-PR badge — verified live against the GitHub API, not hand-typed.
-
-<a name="open-source-detail"></a>
+3 pull requests landed upstream, each proven by a commit on the target repo's own default branch, not just a merged-PR badge.
 
 | Fix | Repo | Landed as |
 |:----|:-----|:----------|
