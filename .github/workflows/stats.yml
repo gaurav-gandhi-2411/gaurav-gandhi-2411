@@ -24,6 +24,15 @@ on:
           stale cards. Leave blank for a normal run.
         required: false
         default: ""
+      open_source_url_override:
+        description: >-
+          Testing only: overrides the open-source.ts source URL
+          build-readme-cards.mjs fetches. Point this at a URL serving a file
+          with a broken shape (missing sourceRef, wrong export name, etc.)
+          to prove that path fails the run instead of committing a wrong
+          card. Leave blank for a normal run.
+        required: false
+        default: ""
 
 concurrency:
   group: stats
@@ -49,15 +58,17 @@ jobs:
           # every other runner on the same egress address.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Same data-freshness contract as build-stats.mjs, for the README
-      # number that also appears on the live portfolio: fetch gg-portfolio's
-      # own source for the production-impact strip, and fail the run — not
-      # the card — if that fetch can't be completed this time.
-      - name: Generate the README cards (production impact)
+      # Same data-freshness contract as build-stats.mjs, for the two README
+      # numbers that also appear on the live portfolio: fetch gg-portfolio's
+      # own source for the production-impact strip, verify the open-source
+      # PRs are still landed via the GitHub API, and fail the run — not the
+      # cards — if either check can't be completed this time.
+      - name: Generate the README cards (production impact + open source)
         run: node scripts/build-readme-cards.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EXPERIENCE_SOURCE_URL_OVERRIDE: ${{ github.event.inputs.data_url_override }}
+          OPEN_SOURCE_URL_OVERRIDE: ${{ github.event.inputs.open_source_url_override }}
 
       # The same gates the assets already pass in CI. A scheduled job that
       # commits without them is a way to ship a malformed or oversized SVG
@@ -70,12 +81,12 @@ jobs:
 
       - name: Commit if anything actually changed
         run: |
-          if git diff --quiet -- assets/stats-dark.svg assets/stats-light.svg assets/c-impact-dark.svg assets/c-impact-light.svg; then
+          if git diff --quiet -- assets/stats-dark.svg assets/stats-light.svg assets/c-impact-dark.svg assets/c-impact-light.svg assets/c-opensource-dark.svg assets/c-opensource-light.svg; then
             echo "stats and cards unchanged, nothing to commit"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/stats-dark.svg assets/stats-light.svg assets/c-impact-dark.svg assets/c-impact-light.svg
+          git add assets/stats-dark.svg assets/stats-light.svg assets/c-impact-dark.svg assets/c-impact-light.svg assets/c-opensource-dark.svg assets/c-opensource-light.svg
           git commit -m "chore(stats): refresh profile stats and README cards [skip ci]"
           git push
