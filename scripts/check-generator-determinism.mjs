@@ -27,6 +27,13 @@
 //
 // Exits non-zero on any difference, so it is usable as a pre-commit hook or a
 // manual gate.
+//
+// Also runs build-readme-cards.mjs, which pulls live data (gg-portfolio's
+// experience.ts, the GitHub API) rather than local fonts. Its two runs will
+// only differ if the underlying source actually changed between them or the
+// rendering logic itself leaked something non-deterministic (a timestamp, an
+// unsorted iteration) — same failure class as build-assets.mjs, different
+// cause. Requires network access.
 
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -49,12 +56,16 @@ function hashAssets() {
   return out;
 }
 
+const GENERATORS = ["build-assets.mjs", "build-readme-cards.mjs"];
+
 function build(label) {
   process.stdout.write(`  building (${label})... `);
-  execFileSync("node", [join(HERE, "build-assets.mjs")], {
-    cwd: ROOT,
-    stdio: ["ignore", "ignore", "pipe"],
-  });
+  for (const generator of GENERATORS) {
+    execFileSync("node", [join(HERE, generator)], {
+      cwd: ROOT,
+      stdio: ["ignore", "ignore", "pipe"],
+    });
+  }
   console.log("done");
 }
 

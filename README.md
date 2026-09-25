@@ -8,7 +8,13 @@ Lead Data Scientist building production GenAI systems in Uber's AI org (via Indi
 
 **[Portfolio →](https://gaurav-gandhi.vercel.app)** where every number links to the commit it came from.
 
-**$10M+/yr** saved by displacing manual document review · **~70%** of earner document verification automated · **50M+** documents behind the transformer it was pretrained on
+<a href="https://github.com/gaurav-gandhi-2411/gg-portfolio/blob/main/content/experience.ts">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/c-impact-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/c-impact-light.svg">
+    <img alt="$10M+ delivered in annual cost savings. Roughly 70% of earner document verification automated. 50M+ documents in the pretraining corpus. Uber Technologies, Uber AI, via Indium Software." src="assets/c-impact-light.svg" width="100%">
+  </picture>
+</a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/h-work-dark.svg">

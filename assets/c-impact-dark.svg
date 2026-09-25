@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="168" viewBox="0 0 1000 168" role="img" aria-label="$10M+ delivered in annual cost savings. Roughly 70% of earner document verification automated. 50M+ documents in the pretraining corpus. Uber Technologies, Uber AI, via Indium Software">
+  <rect width="1000" height="168" rx="14" fill="#0A0B0D" stroke="#26282E"/>
+  <text x="34" y="40" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="11" letter-spacing="3">PRODUCTION IMPACT · UBER AI, VIA INDIUM SOFTWARE</text>
+  <line x1="34" y1="52" x2="966" y2="52" stroke="#26282E"/>
+  
+    <text x="34" y="86" fill="#EDEEF0" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="600">$10M+</text>
+    <text x="34" y="112" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="12" letter-spacing="0.5">delivered in annual cost savings</text>
+    <text x="354" y="86" fill="#EDEEF0" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="600">~70%</text>
+    <text x="354" y="112" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="12" letter-spacing="0.5">of earner doc verification automated</text>
+    <text x="674" y="86" fill="#EDEEF0" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="600">50M+</text>
+    <text x="674" y="112" fill="#A2A6B0" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace" font-size="12" letter-spacing="0.5">documents in the pretraining corpus</text>
+</svg>
