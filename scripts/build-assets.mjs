@@ -183,7 +183,7 @@ const COPY = {
   overline: "LEAD DATA SCIENTIST · APPLIED AI",
   name: "Gaurav Gandhi",
   sub1: "Leading a 5-person data-science team in Uber's AI org.",
-  sub2: "13 AI products shipped · 2 preprints on agent evaluation.",
+  sub2: "13 AI products shipped · 2 working papers on agent evaluation.",
   tagline: "Every number here links to the commit that produced it · gaurav-gandhi.vercel.app",
 };
 
