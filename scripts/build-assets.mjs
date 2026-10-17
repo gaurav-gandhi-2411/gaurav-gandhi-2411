@@ -32,6 +32,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
+import { loadSiteCounts, countClause } from "./site-counts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
@@ -179,11 +180,18 @@ const esc = (s) =>
 
 // --------------------------------------------------------------- content
 
+// Project and live counts come from the site (gg-portfolio content/products.ts),
+// never typed here. loadSiteCounts() throws on any fetch/parse problem, which
+// aborts the build before a single asset is written: a banner that cannot be
+// verified against the site is not regenerated with a guessed number.
+const SITE_COUNTS = await loadSiteCounts();
+console.log(`site counts: ${SITE_COUNTS.projects} projects, ${SITE_COUNTS.live} live`);
+
 const COPY = {
   overline: "LEAD DATA SCIENTIST · APPLIED AI",
   name: "Gaurav Gandhi",
   sub1: "Leading a 5-person data-science team in Uber's AI org.",
-  sub2: "13 AI products shipped · 2 working papers on agent evaluation.",
+  sub2: `${countClause(SITE_COUNTS)} · 2 working papers on agent evaluation.`,
   tagline: "Every number here links to the commit that produced it · gaurav-gandhi.vercel.app",
 };
 
