@@ -57,8 +57,10 @@ const LIVE_FN =
  * string liveUrl. The parser first verifies that function still has that
  * definition, so a redefinition on the site fails here instead of drifting.
  */
-export function parseSiteCounts(src) {
-  if (typeof src !== "string" || src.length === 0) throw new Error("products source is empty");
+export function parseSiteCounts(rawSrc) {
+  if (typeof rawSrc !== "string" || rawSrc.length === 0) throw new Error("products source is empty");
+  // A Windows checkout of the test fixture is CRLF; the parser is line-anchored.
+  const src = rawSrc.replace(/\r\n/g, "\n");
 
   if (!LIVE_FN.test(src)) {
     throw new Error("liveProductCount() is not the expected Boolean(p.liveUrl) filter; refusing to guess");
