@@ -1,10 +1,9 @@
 // Tests for scripts/site-counts.mjs and its use in scripts/build-assets.mjs.
-// Run: node --test tests/
+// Run: node --test tests/site-counts.test.mjs
 //
-// scripts/fixtures/products.ts is a verbatim copy of gg-portfolio
-// content/products.ts at commit 87f2387b587c77f3f13bf33e75e6cfb502c55f49
-// (15 entries, 9 with a liveUrl). No test touches the network except against
-// a stub server on 127.0.0.1.
+// tests/fixtures/products.ts is a 5-entry (3 live) cut-down of the shape of
+// gg-portfolio content/products.ts. Nothing here touches the network except a
+// stub server on 127.0.0.1.
 
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -14,58 +13,134 @@ import { dirname, join } from "node:path";
 import { after, before, describe, test } from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { countClause, parseSiteCounts } from "../scripts/site-counts.mjs";
+import { countClause, fetchProductsSource, parseSiteCounts, productsUrl } from "../scripts/site-counts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const FIXTURE = readFileSync(join(ROOT, "scripts", "fixtures", "products.ts"), "utf8");
+const FIXTURE = readFileSync(join(ROOT, "tests", "fixtures", "products.ts"), "utf8").replace(/\r\n/g, "\n");
 
-// One extra, live entry appended to the array.
-const EXTRA = `  {\n    slug: "extra",\n    liveUrl: "https://example.com/",\n  },\n`;
+// Applies one textual edit to the fixture; the pattern must exist exactly once
+// so a test cannot silently pass because its edit matched nothing.
+function edit(from, to) {
+  assert.equal(FIXTURE.split(from).length, 2, `edit pattern not unique: ${from}`);
+  return FIXTURE.replace(from, () => to);
+}
+const EXTRA_LIVE = `  {\n    slug: "extra",\n    liveUrl: "https://example.com/",\n  },\n`;
+const GAMMA = `    slug: "gamma",\n    name: "Gamma",\n`;
 
-describe("parseSiteCounts", () => {
-  test("fixture parses to 15 projects, 9 live", () => {
-    assert.deepEqual(parseSiteCounts(FIXTURE), { projects: 15, live: 9 });
+describe("parseSiteCounts: counts", () => {
+  test("fixture parses to 5 projects, 3 live", () => {
+    assert.deepEqual(parseSiteCounts(FIXTURE), { projects: 5, live: 3 });
+  });
+
+  test("a CRLF copy of the fixture parses the same", () => {
+    assert.deepEqual(parseSiteCounts(FIXTURE.replace(/\n/g, "\r\n")), { projects: 5, live: 3 });
   });
 
   test("a changed count flows through", () => {
-    const grown = FIXTURE.replace("\n];", `\n${EXTRA}];`);
-    assert.deepEqual(parseSiteCounts(grown), { projects: 16, live: 10 });
-    assert.equal(countClause(parseSiteCounts(grown)), "16 projects · 10 live");
+    const grown = edit("\n];", `\n${EXTRA_LIVE}];`);
+    assert.deepEqual(parseSiteCounts(grown), { projects: 6, live: 4 });
+    assert.equal(countClause(parseSiteCounts(grown)), "6 projects · 4 live");
   });
 
-  test("an entry without liveUrl counts as a project, not as live", () => {
-    const grown = FIXTURE.replace("\n];", `\n  {\n    slug: "extra",\n  },\n];`);
-    assert.deepEqual(parseSiteCounts(grown), { projects: 16, live: 9 });
+  test("an entry without liveUrl is a project, not live", () => {
+    assert.deepEqual(parseSiteCounts(edit("\n];", `\n  {\n    slug: "extra",\n  },\n];`)), { projects: 6, live: 3 });
   });
 
-  test("malformed input is rejected", () => {
-    for (const bad of [
-      "",
-      "export const nothing = 1;",
-      FIXTURE.replace("export const products: Product[] = [", "export const items = ["),
-      FIXTURE.replace("\n];", "\n"), // no closing bracket
-      FIXTURE.replace("Boolean(p.liveUrl)", "Boolean(p.liveUrl || p.pypiUrl)"), // site redefined "live"
-      FIXTURE.replace('    liveUrl: "https://playwarmer.vercel.app/",', "    liveUrl: WARMER_URL,"),
-      FIXTURE.replace('    slug: "warmer",', ""), // entry without a slug
-    ]) {
-      assert.throws(() => parseSiteCounts(bad), Error);
-    }
+  test("a commented-out entry is not counted", () => {
+    const src = edit("\n];", `\n  // {\n  //   slug: "old",\n  //   liveUrl: "https://old.example.com/",\n  // },\n];`);
+    assert.deepEqual(parseSiteCounts(src), { projects: 5, live: 3 });
   });
 
-  test("zero live entries is rejected, not reported as 0", () => {
-    const none = FIXTURE.replace(/^ {4}liveUrl:.*\n/gm, "");
-    assert.throws(() => parseSiteCounts(none), /positive integer/);
+  test("a commented-out liveUrl is not counted live", () => {
+    const src = edit(GAMMA, `${GAMMA}    // liveUrl: "https://gamma.example.com/",\n`);
+    assert.deepEqual(parseSiteCounts(src), { projects: 5, live: 3 });
+  });
+
+  test('liveUrl: "" is not counted live', () => {
+    assert.deepEqual(parseSiteCounts(edit(GAMMA, `${GAMMA}    liveUrl: "",\n`)), { projects: 5, live: 3 });
   });
 });
 
-describe("process exit codes (fail closed)", () => {
+describe("parseSiteCounts: fails closed on anything it cannot count exactly", () => {
+  const rejected = {
+    "empty source": "",
+    "no products array": "export const nothing = 1;",
+    "array renamed": FIXTURE.replace("export const products: Product[]", "export const items: Product[]"),
+    "no closing bracket": FIXTURE.replace("\n];", "\n"),
+    "liveProductCount redefined": FIXTURE.replace("Boolean(p.liveUrl)", "Boolean(p.liveUrl || p.pypiUrl)"),
+    "non-literal liveUrl": FIXTURE.replace('liveUrl: "https://beta.example.com/",', "liveUrl: BETA_URL,"),
+    "entry without slug": FIXTURE.replace('    slug: "gamma",\n', ""),
+    "whole entry inside a block comment": FIXTURE.replace("  {\n    slug: \"beta\"", "  /*\n  {\n    slug: \"beta\"").replace(
+      '    liveUrl: "https://beta.example.com/",\n  },\n',
+      '    liveUrl: "https://beta.example.com/",\n  },\n  */\n'
+    ),
+    "block comment hiding a liveUrl line": FIXTURE.replace(
+      GAMMA,
+      `${GAMMA}    /*\n    liveUrl: "https://gamma.example.com/",\n    */\n`
+    ),
+    "one-line entry": FIXTURE.replace('  {\n    slug: "epsilon",\n    name: "Epsilon",\n  },', '  { slug: "epsilon", name: "Epsilon" },'),
+    "helper-call entry": FIXTURE.replace("\n];", '\n  makeProduct("zeta"),\n];'),
+    "spread entry": FIXTURE.replace("\n];", "\n  ...moreProducts,\n];"),
+    "entry opener with trailing content": FIXTURE.replace('  {\n    slug: "epsilon"', '  { // epsilon\n    slug: "epsilon"'),
+    "second declaration after the array": `${FIXTURE}\nexport const products: Product[] = [\n  {\n    slug: "x",\n    liveUrl: "https://x/",\n  },\n];\n`,
+    "products.push after the array": `${FIXTURE}\nproducts.push(extra);\n`,
+    "products reassigned after the array": `${FIXTURE}\nproducts = [];\n`,
+    "template literal swallowing a column-0 `];`": FIXTURE.replace(
+      GAMMA,
+      `${GAMMA}    note: \`\n];\n\`,\n`
+    ),
+    "template literal containing a fake liveUrl line": FIXTURE.replace(
+      GAMMA,
+      `${GAMMA}    note: \`\n    liveUrl: "https://fake/",\n    \`,\n`
+    ),
+    "unclosed entry": FIXTURE.replace('    slug: "epsilon",\n    name: "Epsilon",\n  },', '    slug: "epsilon",\n    name: "Epsilon",\n'),
+    "stray two-space line": FIXTURE.replace("\n];", "\n  extra,\n];"),
+    "zero live entries": FIXTURE.replace(/^ {4}liveUrl:.*\r?\n/gm, ""),
+  };
+  for (const [name, src] of Object.entries(rejected)) {
+    test(name, () => {
+      assert.throws(() => parseSiteCounts(src), Error);
+    });
+  }
+});
+
+describe("productsUrl override guard", () => {
+  const set = (v) => {
+    process.env.PRODUCTS_SOURCE_URL_OVERRIDE = v;
+  };
+  after(() => {
+    delete process.env.PRODUCTS_SOURCE_URL_OVERRIDE;
+  });
+
+  test("localhost and 127.0.0.1 are honoured", () => {
+    set("http://127.0.0.1:1234/p.ts");
+    assert.equal(productsUrl(), "http://127.0.0.1:1234/p.ts");
+    set("http://localhost:1234/p.ts");
+    assert.equal(productsUrl(), "http://localhost:1234/p.ts");
+  });
+
+  test("any other host, a lookalike host, or a non-URL throws", () => {
+    for (const bad of ["https://example.com/p.ts", "http://127.0.0.1.evil.example/p.ts", "http://localhost.evil.example/", "not a url"]) {
+      set(bad);
+      assert.throws(() => productsUrl(), /OVERRIDE/);
+    }
+  });
+});
+
+describe("fetch hardening and process exit codes", () => {
   let server;
   let base;
   before(async () => {
     server = createServer((req, res) => {
       if (req.url === "/ok") res.end(FIXTURE);
       else if (req.url === "/bad") res.end("export const products: Product[] = [\n  nonsense\n];\n");
-      else {
+      else if (req.url === "/hang") res.write("partial");
+      else if (req.url === "/big") res.end("x".repeat(2_000_000));
+      else if (req.url === "/redirect") {
+        res.statusCode = 302;
+        res.setHeader("location", "https://evil.example.com/products.ts");
+        res.end();
+      } else {
         res.statusCode = 404;
         res.end("nope");
       }
@@ -73,7 +148,10 @@ describe("process exit codes (fail closed)", () => {
     await new Promise((r) => server.listen(0, "127.0.0.1", r));
     base = `http://127.0.0.1:${server.address().port}`;
   });
-  after(() => server.close());
+  after(() => {
+    server.closeAllConnections();
+    server.close();
+  });
 
   // Async spawn, not spawnSync: the stub server lives in this process, and a
   // blocking spawn would starve it and deadlock the child's fetch.
@@ -89,33 +167,53 @@ describe("process exit codes (fail closed)", () => {
       child.on("close", (status) => resolve({ status, stdout, stderr }));
     });
 
-  test("site-counts CLI: stub serving the fixture exits 0 with 15/9", async () => {
+  test("fetchProductsSource returns the body", async () => {
+    assert.equal(await fetchProductsSource(`${base}/ok`), FIXTURE);
+  });
+
+  test("fetchProductsSource times out on a server that never finishes", { timeout: 5000 }, async () => {
+    await assert.rejects(fetchProductsSource(`${base}/hang`, { timeoutMs: 300 }), /failed/);
+  });
+
+  test("fetchProductsSource rejects a body over the size cap", async () => {
+    await assert.rejects(fetchProductsSource(`${base}/big`, { maxBytes: 1000 }), /exceeds/);
+  });
+
+  test("fetchProductsSource refuses a redirect off raw.githubusercontent.com", async () => {
+    await assert.rejects(fetchProductsSource(`${base}/redirect`), /redirect .* refused/);
+  });
+
+  test("site-counts CLI: stub serving the fixture exits 0 with 5/3", async () => {
     const r = await cli("site-counts.mjs", `${base}/ok`);
     assert.equal(r.status, 0, r.stderr);
-    assert.deepEqual(JSON.parse(r.stdout), { projects: 15, live: 9 });
+    assert.deepEqual(JSON.parse(r.stdout), { projects: 5, live: 3 });
   });
 
-  test("site-counts CLI: unrecognised structure exits non-zero", async () => {
-    const r = await cli("site-counts.mjs", `${base}/bad`);
-    assert.notEqual(r.status, 0);
-    assert.match(r.stderr, /site-counts:/);
-  });
+  for (const [name, url] of [
+    ["unrecognised structure", () => `${base}/bad`],
+    ["HTTP 404", () => `${base}/missing`],
+    ["connection refused", () => "http://127.0.0.1:1/x"],
+    ["redirect off-host", () => `${base}/redirect`],
+    ["non-local override", () => "https://example.com/products.ts"],
+  ]) {
+    test(`site-counts CLI: ${name} exits exactly 1`, async () => {
+      const r = await cli("site-counts.mjs", url());
+      assert.equal(r.status, 1, r.stderr);
+      assert.match(r.stderr, /site-counts:/);
+    });
+  }
 
-  test("site-counts CLI: HTTP 404 exits non-zero", async () => {
-    assert.notEqual((await cli("site-counts.mjs", `${base}/missing`)).status, 0);
-  });
-
-  test("site-counts CLI: connection refused exits non-zero", async () => {
-    assert.notEqual((await cli("site-counts.mjs", "http://127.0.0.1:1/x")).status, 0);
+  test("site-counts CLI: a non-local override names the rule", async () => {
+    assert.match((await cli("site-counts.mjs", "https://example.com/products.ts")).stderr, /127\.0\.0\.1 or localhost/);
   });
 
   for (const [name, path] of [["404", "/missing"], ["bad structure", "/bad"]]) {
-    test(`build-assets: ${name} aborts non-zero and writes no asset`, async () => {
+    test(`build-assets: ${name} exits 1 and writes no asset`, async () => {
       const banner = join(ROOT, "assets", "banner-dark.svg");
-      const before = statSync(banner).mtimeMs;
+      const mtime = statSync(banner).mtimeMs;
       const r = await cli("build-assets.mjs", `${base}${path}`);
-      assert.notEqual(r.status, 0);
-      assert.equal(statSync(banner).mtimeMs, before, "banner must not be rewritten");
+      assert.equal(r.status, 1);
+      assert.equal(statSync(banner).mtimeMs, mtime, "banner must not be rewritten");
     });
   }
 });
