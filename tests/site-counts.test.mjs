@@ -28,6 +28,13 @@ const EXTRA_LIVE = `  {\n    slug: "extra",\n    liveUrl: "https://example.com/"
 const GAMMA = `    slug: "gamma",\n    name: "Gamma",\n`;
 
 describe("parseSiteCounts: counts", () => {
+  test("a verbatim excerpt of the real products.ts (every 4-space line shape) parses to 3/2", () => {
+    // Bare `tagline:` + indented string, `key: value,`, `pypi: {` ... `    },`,
+    // multi-line and one-line `figure`, `metric: refreshableMetric(...)`, comments.
+    const real = readFileSync(join(ROOT, "tests", "fixtures", "products.real-shape.ts"), "utf8");
+    assert.deepEqual(parseSiteCounts(real), { projects: 3, live: 2 });
+  });
+
   test("fixture parses to 5 projects, 3 live", () => {
     assert.deepEqual(parseSiteCounts(FIXTURE), { projects: 5, live: 3 });
   });
@@ -93,6 +100,12 @@ describe("parseSiteCounts: fails closed on anything it cannot count exactly", ()
       GAMMA,
       `${GAMMA}    note: \`\n    liveUrl: "https://fake/",\n    \`,\n`
     ),
+    "quoted liveUrl key": FIXTURE.replace(GAMMA, `${GAMMA}    "liveUrl": "https://a.b/",\n`),
+    "computed liveUrl key": FIXTURE.replace(GAMMA, `${GAMMA}    ['liveUrl']: "https://a.b/",\n`),
+    "spread inside an entry": FIXTURE.replace(GAMMA, `${GAMMA}    ...extra,\n`),
+    "quoted slug key": FIXTURE.replace('    slug: "gamma",', '    "slug": "gamma",'),
+    "liveUrl assigned with =": FIXTURE.replace(GAMMA, `${GAMMA}    liveUrl = "https://a.b/",\n`),
+    "odd (three-space) indentation": FIXTURE.replace(GAMMA, `${GAMMA}   note: 1,\n`),
     "unclosed entry": FIXTURE.replace('    slug: "epsilon",\n    name: "Epsilon",\n  },', '    slug: "epsilon",\n    name: "Epsilon",\n'),
     "stray two-space line": FIXTURE.replace("\n];", "\n  extra,\n];"),
     "zero live entries": FIXTURE.replace(/^ {4}liveUrl:.*\r?\n/gm, ""),
@@ -225,6 +238,21 @@ describe("no hand-typed counts", () => {
     assert.doesNotMatch(src, /\d+\s+AI products/);
     assert.doesNotMatch(src, /\d+\s+projects/);
     assert.doesNotMatch(src, /\d+\s+live\b/);
+  });
+
+  test("neither site-counts.mjs nor build-assets.mjs calls process.exit()", () => {
+    // process.exit() with a fetch still tearing down crashes libuv on Windows
+    // and yields a non-1 status; failures must go through process.exitCode or
+    // an uncaught error. Comments may mention it.
+    for (const f of ["site-counts.mjs", "build-assets.mjs"]) {
+      const code = readFileSync(join(ROOT, "scripts", f), "utf8")
+        .split("\n")
+        .filter((l) => !l.trim().startsWith("//"))
+        .join("\n");
+      assert.doesNotMatch(code, /process\.exit\s*\(/, f);
+    }
+    const sc = readFileSync(join(ROOT, "scripts", "site-counts.mjs"), "utf8");
+    assert.match(sc, /process\.exitCode = 1/);
   });
 
   test("the banner's count clause is built from the site counts", () => {

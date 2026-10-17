@@ -171,6 +171,15 @@ export function parseSiteCounts(rawSrc) {
       if (entries.length === 0 || entries[entries.length - 1].closed) {
         throw new Error(`${at}: content outside an entry ${JSON.stringify(line)}`);
       }
+      // A top-level property line must be `identifier: value` (or a bare
+      // `identifier:` whose value follows indented, or the `    },` that closes
+      // a nested object). Quoted or computed keys, spreads and `=` could carry
+      // a `liveUrl` this parser would not see. Deeper-indented lines are
+      // continuations of a value and are not property lines.
+      if (/^ {1,3}\S/.test(line)) throw new Error(`${at}: unsupported indentation ${JSON.stringify(line)}`);
+      if (/^ {4}\S/.test(line) && !/^ {4}[A-Za-z_$][A-Za-z0-9_$]*:( |$)/.test(line) && line !== "    },") {
+        throw new Error(`${at}: unsupported property line ${JSON.stringify(line)}`);
+      }
       entries[entries.length - 1].lines.push(line);
     }
   }
