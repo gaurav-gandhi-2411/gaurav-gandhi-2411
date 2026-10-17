@@ -1,0 +1,46 @@
+name: Banner counts
+
+# The banner's "N projects · M live" clause is generated from gg-portfolio's
+# content/products.ts by scripts/build-assets.mjs (a dev-time script: it needs
+# Python + fontTools, which a scheduled job should not depend on). This
+# workflow is the read-only half: it runs the generator's tests, then checks
+# the committed banners against the site's counts as they are right now, and
+# fails the run when they differ or when the site data cannot be fetched or
+# parsed. It never commits anything.
+#
+# Kept out of ci.yml on purpose: a live fetch in the required PR checks would
+# turn a product added on the site into a red build on every unrelated PR.
+
+on:
+  schedule:
+    - cron: "43 6 * * 1"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/site-counts.mjs"
+      - "scripts/check-banner-counts.mjs"
+      - "scripts/build-assets.mjs"
+      - "scripts/fixtures/products.ts"
+      - "tests/**"
+      - "assets/banner-*.svg"
+      - ".github/workflows/banner-counts.yml"
+
+concurrency:
+  group: banner-counts-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Generator tests (stub server and fixtures, no live data)
+        run: node --test tests/site-counts.test.mjs
+      - name: Committed banners match the site's counts (live fetch)
+        run: node scripts/check-banner-counts.mjs
