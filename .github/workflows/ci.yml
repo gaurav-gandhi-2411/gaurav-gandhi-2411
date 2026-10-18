@@ -23,3 +23,5 @@ jobs:
         run: node scripts/check-readme-image-hosts.mjs
       - name: WCAG AA contrast, both themes
         run: node scripts/check-contrast.mjs
+      - name: Generator and drift-check tests (stub servers and fixtures only, no live network)
+        run: node --test tests/*.test.mjs
