@@ -36,16 +36,24 @@ const MAX_BYTES = 1_000_000;
  * override cannot be used to feed the generator an arbitrary remote file.
  */
 export function productsUrl() {
-  const override = process.env.PRODUCTS_SOURCE_URL_OVERRIDE;
-  if (!override) return DEFAULT_PRODUCTS_URL;
+  return localOnlyOverride("PRODUCTS_SOURCE_URL_OVERRIDE") ?? DEFAULT_PRODUCTS_URL;
+}
+
+/**
+ * The value of env var `name` if it is set, else undefined. Honoured only when
+ * it points at 127.0.0.1 / localhost (test stub servers); anything else throws.
+ */
+export function localOnlyOverride(name) {
+  const override = process.env[name];
+  if (!override) return undefined;
   let u;
   try {
     u = new URL(override);
   } catch {
-    throw new Error(`PRODUCTS_SOURCE_URL_OVERRIDE is not a URL: ${override}`);
+    throw new Error(`${name} is not a URL: ${override}`);
   }
   if (!["127.0.0.1", "localhost"].includes(u.hostname) || !["http:", "https:"].includes(u.protocol)) {
-    throw new Error(`PRODUCTS_SOURCE_URL_OVERRIDE must point at 127.0.0.1 or localhost, got ${u.host}`);
+    throw new Error(`${name} must point at 127.0.0.1 or localhost, got ${u.host}`);
   }
   return override;
 }
@@ -53,12 +61,14 @@ export function productsUrl() {
 /**
  * Fetches the raw products.ts text. Throws on a network error, timeout,
  * non-2xx, a redirect anywhere but raw.githubusercontent.com, or a body larger
- * than maxBytes.
+ * than maxBytes. `allowedHosts` (exact names, or ".suffix" entries) widens the
+ * redirect allow-list for other callers such as the drift check.
  */
 export async function fetchProductsSource(
   url = productsUrl(),
-  { timeoutMs = TIMEOUT_MS, maxBytes = MAX_BYTES } = {}
+  { timeoutMs = TIMEOUT_MS, maxBytes = MAX_BYTES, allowedHosts = [REDIRECT_HOST] } = {}
 ) {
+  const hostOk = (h) => allowedHosts.some((a) => (a.startsWith(".") ? h.endsWith(a) : h === a));
   const signal = AbortSignal.timeout(timeoutMs);
   let current = url;
   let res;
@@ -68,7 +78,7 @@ export async function fetchProductsSource(
       if (res.status < 300 || res.status >= 400) break;
       const loc = res.headers.get("location");
       const next = loc ? new URL(loc, current) : null;
-      if (hops >= 3 || !next || next.protocol !== "https:" || next.hostname !== REDIRECT_HOST) {
+      if (hops >= 3 || !next || next.protocol !== "https:" || !hostOk(next.hostname)) {
         throw new Error(`redirect from ${current} to ${loc} refused`);
       }
       current = next.href;
