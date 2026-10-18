@@ -42,6 +42,13 @@ async function run({ products = { status: 200, body: PRODUCTS }, projects, home,
     if (!route) {
       res.statusCode = 404;
       res.end("nope");
+    } else if (route.big) {
+      // Over the 1 MB cap, announced up front via Content-Length.
+      res.end("x".repeat(1_500_000));
+    } else if (route.endless) {
+      // Over the cap with no Content-Length: chunked, never finishes.
+      const t = setInterval(() => res.write("x".repeat(65_536)), 1);
+      res.on("close", () => clearInterval(t));
     } else if (route.redirect) {
       res.statusCode = 302;
       res.setHeader("location", route.redirect);
@@ -133,10 +140,26 @@ describe("check-banner-counts: process level (stub servers)", () => {
     assert.match(r.stderr, /disagree/);
   });
 
-  test("a non-local SITE_URL_OVERRIDE is refused: exit 1", async () => {
+  for (const [what, route] of [["Content-Length", { big: true }], ["a chunked endless body", { endless: true }]]) {
+    test(`site page over the default 1 MB cap via ${what}: exit 1 "exceeds 1000000"`, async () => {
+      const r = await run({ ...fresh, projects: route });
+      assert.equal(r.status, 1);
+      assert.match(r.stderr, /exceeds 1000000/);
+    });
+
+    test(`products.ts over the default 1 MB cap via ${what}: exit 1 "exceeds 1000000"`, async () => {
+      const r = await run({ ...fresh, products: route });
+      assert.equal(r.status, 1);
+      assert.match(r.stderr, /exceeds 1000000/);
+    });
+  }
+
+  // Both overrides are validated before any fetch, and every spawn below pins
+  // both to local stubs, so no test in this file can reach the network.
+  test("a non-local SITE_URL_OVERRIDE is refused before any fetch: exit 1", async () => {
     const r = await new Promise((resolve) => {
       const child = spawn(process.execPath, [SCRIPT, tmpdir()], {
-        env: { ...process.env, SITE_URL_OVERRIDE: "https://example.com" },
+        env: { ...process.env, PRODUCTS_SOURCE_URL_OVERRIDE: "http://127.0.0.1:9/p.ts", SITE_URL_OVERRIDE: "https://example.com" },
       });
       let stderr = "";
       child.stderr.on("data", (d) => (stderr += d));
@@ -161,6 +184,31 @@ describe("parseRenderedCounts", () => {
   test("the escaped RSC payload alone is not a rendered sentence", () => {
     const payloadOnly = '<script>x([15,\\" projects · \\",9,\\" live today\\"])</script>';
     assert.throws(() => parseRenderedCounts(payloadOnly), /no `<N> projects/);
+  });
+
+  test("padded hex entity and uppercase markup parse", () => {
+    assert.deepEqual(parseRenderedCounts("<P>15 projects &#x00B7; 9 live</P>"), { projects: 15, live: 9 });
+    assert.deepEqual(parseRenderedCounts("<SCRIPT>x</SCRIPT><p>15 projects &#00183; 9 live</p>"), { projects: 15, live: 9 });
+    assert.deepEqual(parseRenderedCounts("<P>15<!-- --> projects · <!-- -->9<!-- --> live</P>"), { projects: 15, live: 9 });
+  });
+
+  test("a sentence only inside script/style/title (any case) is not a rendered sentence", () => {
+    for (const tag of ["script", "SCRIPT", "style", "Style", "title", "TITLE"]) {
+      const html = `<html><${tag}>15 projects · 9 live</${tag}><body>hi</body></html>`;
+      assert.throws(() => parseRenderedCounts(html), /no `<N> projects/, tag);
+    }
+  });
+
+  test("unterminated script or comment drops to the end instead of leaking text", () => {
+    assert.throws(() => parseRenderedCounts("<p>x</p><script>var a=1; 15 projects · 9 live"), /no `<N> projects/);
+    assert.throws(() => parseRenderedCounts("<p>x</p><!-- 15 projects · 9 live"), /no `<N> projects/);
+    assert.throws(() => parseRenderedCounts("<p>x</p><p 15 projects · 9 live"), /no `<N> projects/);
+  });
+
+  test("numbers with a separator or sign are not counts", () => {
+    for (const bad of ["1,015 projects · 9 live", "-15 projects · 9 live", "+15 projects · 9 live", "1.5 projects · 9 live", "15 projects · 1,009 live", "15 projects · 9.5 live"]) {
+      assert.throws(() => parseRenderedCounts(`<p>${bad}</p>`), /no `<N> projects/, bad);
+    }
   });
 
   test("no sentence, or conflicting sentences, throw", () => {

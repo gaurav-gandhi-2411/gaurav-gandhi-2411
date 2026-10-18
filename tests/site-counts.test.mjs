@@ -216,6 +216,12 @@ describe("fetch hardening and process exit codes", () => {
     });
   }
 
+  test("site-counts CLI: a body over the default 1 MB cap exits 1 with 'exceeds 1000000'", async () => {
+    const r = await cli("site-counts.mjs", `${base}/big`);
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /exceeds 1000000/);
+  });
+
   test("site-counts CLI: a non-local override names the rule", async () => {
     assert.match((await cli("site-counts.mjs", "https://example.com/products.ts")).stderr, /127\.0\.0\.1 or localhost/);
   });

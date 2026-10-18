@@ -37,7 +37,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { countClause, fetchProductsSource, localOnlyOverride, loadSiteCounts } from "./site-counts.mjs";
+import { countClause, fetchProductsSource, localOnlyOverride, loadSiteCounts, productsUrl } from "./site-counts.mjs";
 
 const DEFAULT_SITE = "https://gaurav-gandhi.vercel.app";
 const SITE_HOSTS = ["gaurav-gandhi.vercel.app"];
@@ -54,13 +54,18 @@ const PAGES = ["/projects", "/"];
  * matches disagree.
  */
 export function parseRenderedCounts(html) {
+  // Not visitor-readable text: script/style/title bodies and comments. Matching
+  // is case-insensitive, and an unterminated block is dropped to the end of the
+  // document (fail-closed: at worst the sentence is not found, never invented).
   const text = html
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/<script[\s\S]*?<\/script>/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&middot;|&#183;|&#xb7;|&#xB7;/g, "·")
+    .replace(/<(script|style|title)\b[\s\S]*?<\/\1\s*>|<(script|style|title)\b[\s\S]*$/gi, " ")
+    .replace(/<!--[\s\S]*?-->|<!--[\s\S]*$/g, " ")
+    .replace(/<[^>]*>|<[^>]*$/g, " ")
+    .replace(/&middot;|&#0*183;|&#x0*b7;/gi, "·")
     .replace(/\s+/g, " ");
-  const found = [...text.matchAll(/(\d+) projects · (\d+) live/g)].map((m) => ({
+  // The lookarounds reject `1,015 projects` (would read as 015), `-15`, `+15`
+  // and `1.5`: a number with a separator or sign is not a count we can trust.
+  const found = [...text.matchAll(/(?<![\d,.+-])(\d+) projects · (\d+) live(?![\d,.]*\d)/g)].map((m) => ({
     projects: Number(m[1]),
     live: Number(m[2]),
   }));
@@ -97,6 +102,10 @@ export function staleBanners(assetsDir, clause) {
 
 async function main() {
   const assetsDir = process.argv[2] ?? join(dirname(fileURLToPath(import.meta.url)), "..", "assets");
+  // Validate both overrides before any network call: a bad override must fail
+  // immediately and deterministically, not after a real fetch.
+  productsUrl();
+  localOnlyOverride("SITE_URL_OVERRIDE");
   const parsed = await loadSiteCounts();
   const rendered = await loadRenderedCounts();
   console.log(`products.ts counts : ${parsed.projects} projects, ${parsed.live} live`);
