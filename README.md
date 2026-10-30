@@ -26,7 +26,7 @@ Lead Data Scientist building production GenAI systems in Uber's AI org (via Indi
 |:--------|:--------------|:-------|:------|
 | **TriageIQ** | Four-stage GitHub issue triage: classifies component, retrieves similar solved issues, estimates resolution time, drafts a grounded summary | 85.99% / 85.82% top-3 component accuracy (k8s / vscode) | [Live](https://triage-iq-orcin.vercel.app/) · [Repo](https://github.com/gaurav-gandhi-2411/triage-iq) |
 | **AgentGauge** | Causal A/B harness measuring whether an MCP tool-description change actually moves agent task success | One blocking description defect cut task success 13.3–28.9pp across 3 model families | `pip install agentgauge-harness` · [Repo](https://github.com/gaurav-gandhi-2411/agentgauge) |
-| **adk-tracegauge** | Fails your build when an agent starts costing more per run, and tells you, every run, the smallest rise it could actually have caught | 78.2s from a fresh install to a real verdict | `pip install adk-tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/adk-tracegauge) |
+| **adk-tracegauge** | Fails your build when an agent starts costing more per run, and tells you, every run, the smallest rise it could actually have caught | 89.5s from an empty virtualenv to a real verdict (0.10.1, single run) | `pip install adk-tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/adk-tracegauge) |
 | **tracegauge** | Scores a Claude Code session on how efficient it was, and shows you where the tokens went to waste | 84% strict agreement with a reference LLM judge (Spearman ρ≈0.79) | `pip install tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/tracegauge) |
 | **Multimodal Fashion Recommender** | Two-tower recommender aligning CLIP image embeddings with SBERT text embeddings | 3.06× Recall@10 lift over a popularity baseline | [HF Space](https://huggingface.co/spaces/gauravgandhi2411/multimodal-fashion-recommender) · [Repo](https://github.com/gaurav-gandhi-2411/multimodal-fashion-recommender) |
 | **Style Maitri** | AI stylist for Indian occasion wear, searching 52,494 items across 8 stores with guardrails against invented prices and sizes | 93.8% intent-parsing accuracy (n=211) | [Live](https://gaurav-gandhi.vercel.app/warmup/style-maitri) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-shopping-assistant) |
@@ -102,7 +102,7 @@ I keep a written record of measurements that turned out to be lying, and of what
 | 2022–2024 | Decision science: Bayesian change-point detection, SARIMA forecasting | FedEx |
 | 2024–2025 | Data Scientist: multi-agent analytics copilot (hybrid RAG + NL2SQL), session-aware recommender | Uber AI, via Indium |
 | 2025–2026 | Senior Data Scientist: 144-GPU document-understanding transformer, ViT-based document-verification automation | Uber AI, via Indium |
-| 2026–now | Lead Data Scientist: leading a 5-person GenAI team across document-intelligence and conversational-AI workstreams | Uber AI, via Indium |
+| 2026–now | Lead Data Scientist: leading a data-science team across document-intelligence and conversational-AI workstreams | Uber AI, via Indium |
 
 [Résumé](https://gaurav-gandhi.vercel.app/resume.pdf) · [Portfolio](https://gaurav-gandhi.vercel.app)
 
