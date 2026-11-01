@@ -6,7 +6,7 @@
 
 Lead Data Scientist building production GenAI systems in Uber's AI org (via Indium Software), plus independent AI products and research shipped under my own name.
 
-**[Portfolio →](https://gaurav-gandhi.vercel.app)** where every number links to the commit it came from.
+**[Portfolio →](https://gaurav-gandhi.vercel.app)** where project metrics link to their source.
 
 <a href="https://github.com/gaurav-gandhi-2411/gg-portfolio/blob/main/content/experience.ts">
   <picture>
@@ -27,12 +27,12 @@ Lead Data Scientist building production GenAI systems in Uber's AI org (via Indi
 | **TriageIQ** | Four-stage GitHub issue triage: classifies component, retrieves similar solved issues, estimates resolution time, drafts a grounded summary | 85.99% / 85.82% top-3 component accuracy (k8s / vscode) | [Live](https://triage-iq-orcin.vercel.app/) · [Repo](https://github.com/gaurav-gandhi-2411/triage-iq) |
 | **AgentGauge** | Causal A/B harness measuring whether an MCP tool-description change actually moves agent task success | One blocking description defect cut task success 13.3–28.9pp across 3 model families | `pip install agentgauge-harness` · [Repo](https://github.com/gaurav-gandhi-2411/agentgauge) |
 | **adk-tracegauge** | Fails your build when an agent starts costing more per run, and tells you, every run, the smallest rise it could actually have caught | 89.5s from an empty virtualenv to a real verdict (0.10.1, single run) | `pip install adk-tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/adk-tracegauge) |
-| **tracegauge** | Scores a Claude Code session on how efficient it was, and shows you where the tokens went to waste | 84% strict agreement with a reference LLM judge (Spearman ρ≈0.79) | `pip install tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/tracegauge) |
+| **tracegauge** | Scores a Claude Code session on how efficient it was, and shows you where the tokens went to waste | 84% strict agreement between two local judges on 75 positive verdicts; Spearman ρ≈0.79 against a reference LLM | `pip install tracegauge` · [Repo](https://github.com/gaurav-gandhi-2411/tracegauge) |
 | **Multimodal Fashion Recommender** | Two-tower recommender aligning CLIP image embeddings with SBERT text embeddings | 3.06× Recall@10 lift over a popularity baseline | [HF Space](https://huggingface.co/spaces/gauravgandhi2411/multimodal-fashion-recommender) · [Repo](https://github.com/gaurav-gandhi-2411/multimodal-fashion-recommender) |
 | **Style Maitri** | AI stylist for Indian occasion wear, searching 52,494 items across 8 stores with guardrails against invented prices and sizes | 93.8% intent-parsing accuracy (n=211) | [Live](https://gaurav-gandhi.vercel.app/warmup/style-maitri) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-shopping-assistant) |
 | **AetherArt** | SDXL fine-tuned into a Japanese ukiyo-e style, composed with Hyper-SD and ControlNet | 6.2GB peak VRAM, so the whole pipeline fits an 8GB consumer GPU | [Live](https://gaurav-gandhi.vercel.app/warmup/aetherart) · [Repo](https://github.com/gaurav-gandhi-2411/AetherArt) |
-| **Warmer** | A word game you play once a day, where your only clue is how close each guess comes in meaning to the secret word | Hinglish relatedness eval: −0.003 → 0.813 | [Live](https://playwarmer.vercel.app/) |
-| **DealHunter** | Multi-agent flight search that turns a plain-English trip request into two honestly explained trade-offs | 31/31 correct archetype selection on the planner baseline (Wilson 95% CI 89–100%) | [Live](https://gaurav-gandhi.vercel.app/warmup/dealhunter) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
+| **Warmer** | A word game you play once a day, where your main clue is how close each guess comes in meaning to the secret word | Hinglish relatedness eval: −0.003 → 0.813 | [Live](https://playwarmer.vercel.app/) |
+| **DealHunter** | Multi-agent flight search that turns a plain-English trip request into two honestly explained trade-offs | 31/31 archetype selection, deterministic, no LLM (Wilson 95% CI 89–100%) | [Live](https://gaurav-gandhi.vercel.app/warmup/dealhunter) · [Repo](https://github.com/gaurav-gandhi-2411/agentic-travel-booking-system) |
 | **Samidha Reviews** | Turns customer reviews into structured insight across English and Hinglish with tiered LLM routing | [78.6% (95% CI 73–83%, n=43, eval 2026-09-19)](https://github.com/gaurav-gandhi-2411/review-iq/blob/main/eval/report.md) | [Live](https://app.samidhareviews.xyz) · [Repo](https://github.com/gaurav-gandhi-2411/review-iq) |
 
 <picture>
@@ -69,12 +69,12 @@ Own packages on PyPI: [`tracegauge`](https://pypi.org/project/tracegauge/) · [`
   <img alt="How I work" src="assets/h-how-light.svg" width="100%">
 </picture>
 
-Every project ships with a pre-registered evaluation harness; negative results get published, not buried:
+Every project ships with an evaluation harness; negative results get published, not buried:
 
 | Project | What it falsified | Case study |
 |:--------|:------------------|:-----------|
 | **AgentGauge** | Its own v1 thesis. The 8-axis LLM-judged quality score did not predict real task success once corrected for multiple comparisons and prompt length, so the project was rebuilt around a causal A/B harness instead of patched to save the score. | [Read](https://gaurav-gandhi.vercel.app/work/agentgauge) |
-| **Gold Rate Tracker** | Its own model. Across a 209-fold backtest the naive forecast still beats the ML model, MAE 249.24 against 292.14, so the naive baseline is what runs in production. | [Read](https://gaurav-gandhi.vercel.app/work/gold-rate-tracker) |
+| **Gold Rate Tracker** | The pretrained forecaster. In the 209-fold backtest the project pins as its citation (2026-08-02 run) the naive forecast beats Chronos-Bolt-Tiny, MAE 249.24 against 292.14, so Chronos stays a hidden companion rather than the headline. | [Read](https://gaurav-gandhi.vercel.app/work/gold-rate-tracker) |
 | **AetherArt** | A published conclusion, including its own. CLIP score, the field's default image-quality metric, turned out to be structurally blind to real quality changes in most cases tested. Re-running under a stricter statistical bar cut the project's headline finding from 9/9 to 4/9, and the smaller number is what it reports. | [Read](https://gaurav-gandhi.vercel.app/work/aetherart) |
 
 I keep a written record of measurements that turned out to be lying, and of whatever caught each one. One example: a header test confirmed the nav band shrinks on scroll. It did, and the shrinking was the bug — the band sat in flow, so every element below it moved too. The test had been written after reading the code, so it could only ever agree with it. [Full corrections log →](docs/corrections.md)
